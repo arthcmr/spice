@@ -216,7 +216,7 @@ module.exports = function (grunt) {
         compress: {
             dist: {
                 options: {
-                    archive: 'package/Search Google Drive<%= config.manifest.version %>.zip'
+                    archive: 'package/Spice<%= config.manifest.version %>.zip'
                 },
                 files: [{
                     expand: true,
