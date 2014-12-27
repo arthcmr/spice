@@ -1,7 +1,7 @@
 SPICE
 =====
 
-Chrome extension
+Chrome extension (KTH project for DT2140, HT 2014)
 
 ##How to get started:
 
