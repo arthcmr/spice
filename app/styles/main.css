@@ -1,24 +1,64 @@
 #spice_display {
-	display: block;
-	text-align: center;
-	position: fixed;
-	width: 150px;
-	bottom: 45px;
-	height: 200px;
-	right: 15px;
-	border: 1px solid rgba(204, 204, 204, 0.5);
-	border-radius: 5px;
-	background: #f7f7f7;
-	overflow-y: hidden;
-	z-index: 2147483647;
+    font-family: Helvetica, Arial, sans-serif;
+    display: block;
+    text-align: center;
+    position: fixed;
+    overflow-y: hidden;
+    font-size: 11px;
+    padding: 15px;
+    width: 150px;
+    max-height: 500px;
+    right: 15px;
+    bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid rgba(204, 204, 204, 0.5);
+    background: #f7f7f7;
+    border: 1px solid rgb(221, 221, 221);
+    -webkit-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    z-index: 2147483647;
 }
-
-#spice_display #spice_sentence{
-	color: #0000cc;
+#spice_microphone {
+    margin: 5px auto;
+    width: 30px;
+    height: 30px;
+    background: url(../images/microphone.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-animation: pulsing 1s infinite;
+    animation: pulsing 1s infinite;
 }
-#spice_display #spice_history{
-	color: #00cc00;
+#spice_display #spice_sentence {
+    color: #CB844B;
+    margin-bottom: 5px;
 }
-#spice_display #spice_done{
-	color: #cccccc;
+#spice_display #spice_history {
+    color: #5F97C5;
+    margin-bottom: 5px;
+}
+#spice_display #spice_done {
+    color: #CCCCCC;
+}
+@-webkit-keyframes pulsing {
+  0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+@keyframes pulsing {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
