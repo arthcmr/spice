@@ -1,5 +1,6 @@
 #spice_display {
 	display: block;
+	text-align: center;
 	position: fixed;
 	width: 150px;
 	height: 100px;
