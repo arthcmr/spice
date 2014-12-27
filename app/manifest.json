@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Spice",
     "description": "Spice",
-    "version": "0.18",
+    "version": "0.35",
     "icons": {
         "128": "images/icon-128.png"
     },
