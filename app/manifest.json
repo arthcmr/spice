@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Spice",
     "description": "Spice",
-    "version": "0.13",
+    "version": "0.18",
     "icons": {
         "128": "images/icon-128.png"
     },
@@ -36,5 +36,8 @@
         "*://*/*",
         "http://*/*",
         "https://*/*"
+    ],
+    "web_accessible_resources": [
+        "styles/main.css"
     ]
 }

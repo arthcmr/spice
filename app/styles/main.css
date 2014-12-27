@@ -1,4 +1,13 @@
-body {
-    padding: 20px;
-    max-width: 300px;
+#spice_display {
+	display: block;
+	position: fixed;
+	width: 150px;
+	height: 100px;
+	top: 15px;
+	right: 15px;
+	border: 1px solid rgba(204, 204, 204, 0.5);
+	border-radius: 5px;
+	background: #f7f7f7;
+	overflow-y: hidden;
+	z-index: 2147483647;
 }
