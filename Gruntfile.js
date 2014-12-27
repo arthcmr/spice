@@ -163,38 +163,6 @@ module.exports = function (grunt) {
             }
         },
 
-        // Copies remaining files to places other tasks can use
-        copy: {
-            dist: {
-                files: [{
-                    expand: true,
-                    dot: true,
-                    cwd: '<%= config.app %>',
-                    dest: '<%= config.dist %>',
-                    src: [
-                        '*.{ico,png,txt}',
-                        'images/{,*/}*.{webp,gif}',
-                        '{,*/}*.html',
-                        'styles/{,*/}*.css',
-                        'styles/fonts/{,*/}*.*',
-                        '_locales/{,*/}*.json',
-                    ]
-                }]
-            }
-        },
-
-        // Run some tasks in parallel to speed up build process
-        concurrent: {
-            chrome: [
-            ],
-            dist: [
-                'imagemin',
-                'svgmin'
-            ],
-            test: [
-            ]
-        },
-
         // Auto buildnumber, exclude debug files. smart builds that event pages
         chromeManifest: {
             dist: {
@@ -210,6 +178,50 @@ module.exports = function (grunt) {
                 src: '<%= config.app %>',
                 dest: '<%= config.dist %>'
             }
+        },
+
+        // Copies remaining files to places other tasks can use
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= config.app %>',
+                    dest: '<%= config.dist %>',
+                    src: [
+                        '*.{ico,png,txt}',
+                        'images/{,*/}*.{webp,gif}',
+                        '{,*/}*.html',
+                        'styles/{,*/}*.css',
+                        'styles/fonts/{,*/}*.*',
+                        '_locales/{,*/}*.json',
+                        'scripts/{,*/}*.js'
+                    ]
+                }]
+            },
+            dependencies: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= config.app %>/bower_components',
+                    dest: '<%= config.dist %>/vendor',
+                    src: [
+                        'jquery/*/*'
+                    ]
+                }]
+            }
+        },
+
+        // Run some tasks in parallel to speed up build process
+        concurrent: {
+            chrome: [
+            ],
+            dist: [
+                'imagemin',
+                'svgmin'
+            ],
+            test: [
+            ]
         },
 
         // Compres dist files to package
@@ -238,14 +250,16 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'chromeManifest:dist',
+        'chromeManifest',
         'useminPrepare',
         'concurrent:dist',
-        'cssmin',
         'concat',
-        'uglify',
         'copy',
-        'usemin',
+        'usemin'
+    ]);
+
+    grunt.registerTask('deploy', [
+        'build',
         'compress'
     ]);
 

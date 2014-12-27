@@ -1,25 +1,40 @@
 {
-    "name": "__MSG_appName__",
-    "version": "0.0.11",
     "manifest_version": 2,
-    "description": "__MSG_appDescription__",
+    "name": "Spice",
+    "description": "Spice",
+    "version": "0.13",
     "icons": {
-        "16": "images/icon-16.png",
         "128": "images/icon-128.png"
     },
     "default_locale": "en",
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "windows": "Alt+S",
+                "mac": "Alt+S",
+                "chromeos": "Alt+S",
+                "linux": "Alt+S"
+            }
+        }
+    },
     "background": {
         "scripts": [
-            "scripts/chromereload.js",
-            "scripts/background.js"
-        ]
+            "app.html"
+        ],
+        "persistent": true
     },
     "browser_action": {
         "default_icon": {
             "19": "images/icon-19.png",
             "38": "images/icon-38.png"
         },
-        "default_title": "Spice",
-        "default_popup": "app.html"
-    }
+        "default_title": "Spice"
+    },
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "*://*/*",
+        "http://*/*",
+        "https://*/*"
+    ]
 }

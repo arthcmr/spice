@@ -1,14 +1,4 @@
-<!doctype html>
-<html>
-    <head>
-        <!-- build:css styles/main.css -->
-        <link href="styles/main.css" rel="stylesheet">
-        <!-- endbuild -->
-
-        <!-- build:js scripts/app.js -->
-        <!-- endbuild -->
-    </head>
-    <body>
-        HERES THE EXTENSION
-    </body>
-</html>
+chrome.browserAction.onClicked.addListener(function(tab) {
+    chrome.tabs.executeScript(null, {file: "vendor/jquery/dist/jquery.min.js"});
+    chrome.tabs.executeScript(null, {file: "scripts/app.js"});
+});
