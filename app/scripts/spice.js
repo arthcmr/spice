@@ -140,6 +140,36 @@ Spice = {
                         command.value = value;
                     }
                 break;
+                case "title":
+                    var target = $("h1"),
+                        value,
+                        action;
+                    if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
+                        var entry = response.entities.agenda_entry[0].value;
+                        if(entry === "bold" || entry === "normal") {
+                            action = "changeFontWeight";
+                            value = entry;
+                        }
+                        else if (SpiceUtils.isColor(entry)) {
+                            action = "changeFontColor";
+                            value = entry;
+                        }
+                        else if (SpiceUtils.isSize(entry)) {
+                            action = "changeFontSize";
+                            value = entry;
+                        }
+                        else if(entry === "normal" || entry === "italics" || entry === "oblique" ) {
+                            //PROBLEM WITH SAYING ITALICS
+                            action = "changeFontStyle";
+                            value = entry;
+                        }
+
+
+                        command.action = action;
+                        command.target = target;
+                        command.value = value;
+                    }
+                break;
             }
         }
 
@@ -179,6 +209,17 @@ Spice = {
 
     changeFontSize: function(target, value) {
 
+    },
+
+    changeFontWeight: function(target, value) {
+        // bold
+        console.log("Changing Font Weight");
+        target.css('font-weight', value);
+    },
+    changeFontStyle: function(target, value) {
+        //italics, normal, oblique
+        console.log("Changing Font Style");
+        target.css('font-style', value);
     }
 
 };

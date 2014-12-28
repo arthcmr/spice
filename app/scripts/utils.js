@@ -20,7 +20,7 @@ SpiceUtils = {
     },
 
     isColor: function(string) {
-        var colors = ["red", "blue"];
+        var colors = ["red", "blue", "green", "yellow", "white", "orange"];
         return (colors.indexOf(string) !== -1);
     },
 
