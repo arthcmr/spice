@@ -159,7 +159,7 @@ Spice = {
                             value = entry;
                         }
                         else if(entry === "normal" || entry === "italics" || entry === "oblique" ) {
-                            //PROBLEM WITH SAYING ITALICS
+                            //PROBLEM WHEN SAYING ITALICS
                             action = "changeFontStyle";
                             value = entry;
                         }
@@ -208,7 +208,33 @@ Spice = {
     },
 
     changeFontSize: function(target, value) {
-
+        //INCREASE NOT WORKING !!!
+        console.log("Trying to change font size");
+        if(value === "bigger" || value === "larger" || value === "increase"){            
+            var currentFont = parseInt(target.css('font-size'));            
+            var fontToSet = currentFont + 15;
+            var finalFont = fontToSet.toString();                    
+            target.css('font-size', finalFont.concat("px"));
+        }
+        else if (value === "smaller" || value === "decrease"){
+        if(value === "smaller" || value === "decrease"){
+            var currentFont = parseInt(target.css('font-size'));            
+            var fontToSet = currentFont - 15;
+            var finalFont = fontToSet.toString();                    
+            target.css('font-size', finalFont.concat("px"));
+            }
+        } 
+        else if(value === "small" ){                    
+            target.css('font-size', "medium");
+        }   
+        else if(value === "large" ){                    
+            target.css('font-size', "x-large");
+        }     
+        else
+        {
+            //exact number for the font size (pixels) - TO BE IMPLEMENTED
+            target.css('font-size', value);
+        }   
     },
 
     changeFontWeight: function(target, value) {

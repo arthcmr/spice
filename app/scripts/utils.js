@@ -25,6 +25,7 @@ SpiceUtils = {
     },
 
     isSize: function(string) {
-        return false;
+        var sizes = ["bigger", "larger", "large", "smaller", "big", "small", "increase", "decrease"];
+        return (sizes.indexOf(string) !== -1);
     }
 };
