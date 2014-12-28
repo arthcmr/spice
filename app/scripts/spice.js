@@ -121,6 +121,14 @@ Spice = {
                             action = "changeFontSize";
                             value = entry;
                         }
+                        else if(SpiceUtils.isAligned(entry)) {                            
+                            action = "align";
+                            value = entry;
+                        }
+                        else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
+                            action = "removeElement";
+                            value = entry;
+                        }
 
                         command.action = action;
                         command.target = target;
@@ -146,7 +154,7 @@ Spice = {
                         action;
                     if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
                         var entry = response.entities.agenda_entry[0].value;
-                        if(entry === "bold" || entry === "normal") {
+                        if(SpiceUtils.isFontWeight(entry)) {
                             action = "changeFontWeight";
                             value = entry;
                         }
@@ -158,13 +166,19 @@ Spice = {
                             action = "changeFontSize";
                             value = entry;
                         }
-                        else if(entry === "normal" || entry === "italics" || entry === "oblique" ) {
+                        else if(SpiceUtils.isFontStyle(entry)) {
                             //PROBLEM WHEN SAYING ITALICS
                             action = "changeFontStyle";
                             value = entry;
                         }
-
-
+                        else if(SpiceUtils.isAligned(entry)) {                            
+                            action = "align";
+                            value = entry;
+                        }
+                        else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
+                            action = "removeElement";
+                            value = entry;
+                        }
                         command.action = action;
                         command.target = target;
                         command.value = value;
@@ -242,10 +256,35 @@ Spice = {
         console.log("Changing Font Weight");
         target.css('font-weight', value);
     },
+
     changeFontStyle: function(target, value) {
         //italics, normal, oblique
         console.log("Changing Font Style");
         target.css('font-style', value);
+    },
+
+    align: function(target, value) {        
+        console.log("Aligning Text");
+        if(value === "center" || value === "middle")
+        {
+            target.css('text-align', "center");
+        }
+        else if (value === "left")
+        {
+            target.css('text-align', value);
+        }
+        else if (value === "right")
+        {
+            target.css('text-align', value);
+        } 
+    },
+
+    removeElement: function(target, value){
+        //CURRENTLY IT IS ONLY HIDING ONE ELEMENT
+        console.log("Removing Element");
+        target.css('visibility', "hidden");
+        //line to remove the element
+        //target.css('display', "none");
     }
 
 };
