@@ -40,7 +40,7 @@ SpiceUtils = {
     },
 
     isAligned: function(string) {
-        var alignment = ["center", "middle", "left", "right"];
+        var alignment = ["center", "middle", "left", "right", "justify"];
         return (alignment.indexOf(string) !== -1);
     }
 };

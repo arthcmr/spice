@@ -277,6 +277,10 @@ Spice = {
         {
             target.css('text-align', value);
         } 
+        else if (value === "justify")
+        {
+            target.css('text-align', "justify");
+        } 
     },
 
     removeElement: function(target, value){
