@@ -129,6 +129,10 @@ Spice = {
                             action = "removeElement";
                             value = entry;
                         }
+                        else if(entry === "hide") {                            
+                            action = "hideElement";
+                            value = entry;
+                        }
 
                         command.action = action;
                         command.target = target;
@@ -179,6 +183,10 @@ Spice = {
                             action = "removeElement";
                             value = entry;
                         }
+                        else if(entry === "hide") {                            
+                            action = "hideElement";
+                            value = entry;
+                        }
                         command.action = action;
                         command.target = target;
                         command.value = value;
@@ -211,13 +219,28 @@ Spice = {
     changeBackgroundColor: function(target, value) {
         console.log("Trying to change the background");
 
-        var color = SpiceUtils.stringToColor(value, target.css('backgroundColor'));
+        if(value === "lighter" || value === "darker" || value === "brighter")
+        {
+            var currentRgb = target.css("backgroundColor");
+
+            var currentHex = this.rgb2hex(currentRgb);
+        }
+
+        var color = SpiceUtils.stringToColor(value, currentHex, target.css('backgroundColor'));
         target.css('backgroundColor', color);
     },
 
     changeFontColor: function(target, value) {
         console.log("Trying to change the font color");
-        var color = SpiceUtils.stringToColor(value, target.css('color'));
+
+        if(value === "lighter" || value === "darker" || value === "brighter")
+        {
+            var currentRgb = target.css("color");
+
+            var currentHex = this.rgb2hex(currentRgb);
+        }
+
+        var color = SpiceUtils.stringToColor(value, currentHex, target.css('color'));
         target.css('color', color);
     },
 
@@ -283,12 +306,23 @@ Spice = {
         } 
     },
 
-    removeElement: function(target, value){
-        //CURRENTLY IT IS ONLY HIDING ONE ELEMENT
-        console.log("Removing Element");
+    removeElement: function(target, value){        
+        console.log("Removing Element");        
+        target.css('display', "none");
+    },
+
+    hideElement: function(target, value){    
+        console.log("Hiding Element");        
         target.css('visibility', "hidden");
-        //line to remove the element
-        //target.css('display', "none");
+    },
+
+    //Function to convert rgb format to a hex color
+    rgb2hex: function(rgb){
+        rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+        return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
     }
 
 };
