@@ -115,14 +115,17 @@ Spice = {
                         }
                         else if (SpiceUtils.isColor(entry)) {
                             action = "changeFontColor";
+                            target.css('-webkit-transition', 'color 1s ease-out');
                             value = entry;
                         }
                         else if (SpiceUtils.isSize(entry)) {
                             action = "changeFontSize";
+                            target.css('-webkit-transition', 'font-size 1s');
                             value = entry;
                         }
                         else if(SpiceUtils.isAligned(entry)) {                            
                             action = "align";
+
                             value = entry;
                         }
                         else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
@@ -146,6 +149,7 @@ Spice = {
                     if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
                         var entry = response.entities.agenda_entry[0].value;
                         action = "changeBackgroundColor";
+                        target.css('-webkit-transition', 'background-color 1s ease-out');
                         value = entry;
                         command.action = action;
                         command.target = target;
@@ -164,10 +168,12 @@ Spice = {
                         }
                         else if (SpiceUtils.isColor(entry)) {
                             action = "changeFontColor";
+                            target.css('-webkit-transition', 'color 1s ease-out');
                             value = entry;
                         }
                         else if (SpiceUtils.isSize(entry)) {
                             action = "changeFontSize";
+                            target.css('-webkit-transition', 'font-size 1s');
                             value = entry;
                         }
                         else if(SpiceUtils.isFontStyle(entry)) {
@@ -181,10 +187,14 @@ Spice = {
                         }
                         else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
                             action = "removeElement";
+                            //Not working !!!
+                            target.css('-webkit-animation', 'fadeOut 500ms');                            
                             value = entry;
                         }
                         else if(entry === "hide") {                            
                             action = "hideElement";
+                            //Not working !!!
+                            target.css('-webkit-animation', 'fadeOut 500ms');
                             value = entry;
                         }
                         command.action = action;
@@ -252,6 +262,8 @@ Spice = {
             var fontToSet = currentFont + 15;
             var finalFont = fontToSet.toString();                    
             target.css('font-size', finalFont.concat("px"));
+            //Not Done !!!
+            target.css('backgroundColor', 'gray');            
         }
         else if (value === "smaller" || value === "decrease"){
         if(value === "smaller" || value === "decrease"){
