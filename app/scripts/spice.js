@@ -5,7 +5,9 @@ Spice = {
     recog: null,
     start_player: null,
     stop_player: null,
-
+    p_action: "",
+    p_target: "",
+    p_value: "",
     init: function() {
 
         //in case theres no webkitSpeech
@@ -143,10 +145,7 @@ Spice = {
                     }
                     if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
                         var entry = response.entities.agenda_entry[0].value;
-                        if(entry === "remove") {
-                            action = "remove";
-                        }
-                        else if (SpiceUtils.isColor(entry)) {
+                       if (SpiceUtils.isColor(entry)) {
                             action = "changeFontColor";
                             target.css('-webkit-transition', 'color 1s ease-out');
                             value = entry;
@@ -154,6 +153,15 @@ Spice = {
                         else if (SpiceUtils.isSize(entry)) {
                             action = "changeFontSize";
                             target.css('-webkit-transition', 'font-size 1s');
+                            value = entry;
+                        }
+                        else if(SpiceUtils.isFontWeight(entry)) {
+                            action = "changeFontWeight";
+                            value = entry;
+                        }
+                        else if(SpiceUtils.isFontStyle(entry)) {
+                            //PROBLEM WHEN SAYING ITALICS
+                            action = "changeFontStyle";
                             value = entry;
                         }
                         else if(SpiceUtils.isAligned(entry)) {                            
@@ -169,10 +177,17 @@ Spice = {
                             action = "hideElement";
                             value = entry;
                         }
+                        else if(entry === "show" ) {  
+                            console.log("showing")  ;                        
+                            action = "showElement";
+                            value = entry;
+                        }
 
                         command.action = action;
                         command.target = target;
                         command.value = value;
+                        this.p_action = action;
+                        this.p_target= target;
                     }
                 break;
                 case "background":
@@ -187,6 +202,8 @@ Spice = {
                         command.action = action;
                         command.target = target;
                         command.value = value;
+                        this.p_action = action;
+                        this.p_target= target;
                     }
                 break;
                 case "title":
@@ -230,10 +247,48 @@ Spice = {
                             target.css('-webkit-animation', 'fadeOut 500ms');
                             value = entry;
                         }
+                        else if(entry === "show" ) {                            
+                            action = "showElement";
+                            value = entry;
+                        }
                         command.action = action;
                         command.target = target;
                         command.value = value;
+                        this.p_action = action;
+                        this.p_target= target;
                     }
+                break;
+                case "undo":
+                case "go_back":
+                        console.log("Trying to undo");
+                        if(this.p_action == "hideElement"){
+                            console.log("prev hide now show");
+                            command.action = "showElement";
+                            this.p_action="showElement"
+                        }
+                        else if (this.p_action == "showElement"){
+                            console.log("prev show now hide");
+                            command.action = "hideElement";
+                            this.p_action="hideElement"
+                        }
+                        else if (this.p_action == "removeElement"){
+                            console.log("prev remove now restore");
+                            command.action = "restoreElement";
+                            this.p_action="restoreElement"
+                        }
+                        else if (this.p_action == "restoreElement"){
+                            console.log("prev restore now remove");
+                            command.action = "removeElement";
+                            this.p_action="removeElement"
+                        }
+
+                        else  
+                        {
+                        command.action = this.p_action;
+                        
+                        }
+                        command.target = this.p_target;
+                        command.value = this.p_value;
                 break;
             }
         }
@@ -263,6 +318,7 @@ Spice = {
 
     changeBackgroundColor: function(target, value) {
         console.log("Trying to change the background");
+        this.p_value = target.css("backgroundColor");
 
         if(value === "lighter" || value === "darker" || value === "brighter")
         {
@@ -277,6 +333,7 @@ Spice = {
 
     changeFontColor: function(target, value) {
         console.log("Trying to change the font color");
+        this.p_value = target.css("color");
 
         if(value === "lighter" || value === "darker" || value === "brighter")
         {
@@ -292,6 +349,7 @@ Spice = {
     changeFontSize: function(target, value) {
         //INCREASE NOT WORKING !!!
         console.log("Trying to change font size");
+        this.p_value = target.css("font-size");
         if(value === "bigger" || value === "larger" || value === "increase"){            
             var currentFont = parseInt(target.css('font-size'));            
             var fontToSet = currentFont + 15;
@@ -324,17 +382,20 @@ Spice = {
     changeFontWeight: function(target, value) {
         // bold
         console.log("Changing Font Weight");
+        this.p_value = target.css("font-weight");
         target.css('font-weight', value);
     },
 
     changeFontStyle: function(target, value) {
         //italics, normal, oblique
         console.log("Changing Font Style");
+        this.p_value = target.css("font-style");
         target.css('font-style', value);
     },
 
     align: function(target, value) {        
         console.log("Aligning Text");
+        this.p_value = target.css("text-align");
         if(value === "center" || value === "middle")
         {
             target.css('text-align', "center");
@@ -361,6 +422,25 @@ Spice = {
     hideElement: function(target, value){    
         console.log("Hiding Element");        
         target.css('visibility', "hidden");
+    },
+    showElement: function(target, value){
+        if (target.css("visibility") == "hidden")
+        {
+            console.log("Showing Element");
+            target.css('visibility', "visible");
+        }
+        else
+        {
+            console.log("Restoring Element");
+            target.css('display', "inline");
+            this.p_action="restoreElement"
+        }
+    },
+
+    restoreElement: function(target, value){
+        
+            console.log("Restoring Element");
+            target.css('display', "inline");
     },
 
     //Function to convert rgb format to a hex color
