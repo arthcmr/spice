@@ -7,7 +7,9 @@ if (spice_display.is(':visible')) {
     }, 200).animate({
         right: "-330px"
     }, 300, function() {
-        spice_display.hide();
+        spice_display.hide(); 
+             
+        stopListening();
     });
 } else if (spice_display.is(':hidden')) {
     spice_display.show();
@@ -18,7 +20,7 @@ if (spice_display.is(':visible')) {
     }, 300).animate({
         right: "15px"
     }, 200);
-
+        
     listen();
 }
 
@@ -52,5 +54,11 @@ else {
 function listen() {
 
 	Spice.init();
+
+}
+
+function stopListening() {
+
+    Spice.stopListening();
 
 }

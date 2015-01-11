@@ -2,6 +2,7 @@ Spice = {
     sentence: "",
     interval: 3000,
     timer: 0,
+    recog: null,
 
     init: function() {
 
@@ -12,6 +13,7 @@ Spice = {
         //we can use speech recognition
         else {
             var recognition = new webkitSpeechRecognition();
+            recog = recognition;
             recognition.continuous = true;
             recognition.interimResults = true;
             recognition.lang = 'en-US';
@@ -46,15 +48,32 @@ Spice = {
                 }
 
             }.bind(this);
+            
+            /*  
+                I think that recognition.onend is not really necessary. It works good without it. When the Spice icon
+                is pressed it goes into this branch and it keeps executing it like in a while loop (and we have to 
+                restart the whole web page).
 
-            //if theres an error, start over
+                Correct me if I'm wrong, but I think that we are good without it.  
+                P.S. Stop Listening works without recognition.onend. When I uncomment it, it goes in endless loop.
+            */
+
+            /*//if theres an error, start over
             recognition.onend = function(evt) {
-                console.log("Restarting speech recognition");
+                console.log("Restarting speech recognition");                
                 recognition.start();
-            };
-
+            };*/
+            
+            console.log('Listening Started...');
             recognition.start();
+    
         }
+    },
+
+    stopListening: function()
+    {
+        console.log('Listening Stopped...');
+        recog.abort();
     },
 
     isNewSentence: function() {
@@ -82,8 +101,6 @@ Spice = {
             $('#spice_history').html("");
         });
     },
-
-
 
     /*
      * gets the wit response and interprets its fields into Spice actions
@@ -263,7 +280,7 @@ Spice = {
             var finalFont = fontToSet.toString();                    
             target.css('font-size', finalFont.concat("px"));
             //Not Done !!!
-            target.css('backgroundColor', 'gray');            
+            //target.css('backgroundColor', 'gray');            
         }
         else if (value === "smaller" || value === "decrease"){
         if(value === "smaller" || value === "decrease"){

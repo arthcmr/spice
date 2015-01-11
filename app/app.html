@@ -1,7 +1,7 @@
 chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.executeScript(null, {file: "vendor/jquery/dist/jquery.min.js"})
-    ;
+    chrome.tabs.executeScript(null, {file: "vendor/jquery/dist/jquery.min.js"});
     chrome.tabs.executeScript(null, {file: "scripts/utils.js"});
     chrome.tabs.executeScript(null, {file: "scripts/spice.js"});
     chrome.tabs.executeScript(null, {file: "scripts/app.js"});
 });
+
