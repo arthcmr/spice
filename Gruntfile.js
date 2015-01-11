@@ -50,6 +50,7 @@ module.exports = function (grunt) {
                 files: [
                     '<%= config.app %>/*.html',
                     '<%= config.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+                    '<%= config.app %>/sounds/{,*/}*.{mp3}',
                     '<%= config.app %>/manifest.json',
                     '<%= config.app %>/_locales/{,*/}*.json'
                 ]
@@ -191,6 +192,7 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,png,txt}',
                         'images/{,*/}*.{webp,gif}',
+                        'sounds/{,*/}*.mp3',
                         '{,*/}*.html',
                         'styles/{,*/}*.css',
                         'styles/fonts/{,*/}*.*',

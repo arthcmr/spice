@@ -3,6 +3,8 @@ Spice = {
     interval: 3000,
     timer: 0,
     recog: null,
+    start_player: null,
+    stop_player: null,
 
     init: function() {
 
@@ -17,6 +19,19 @@ Spice = {
             recognition.continuous = true;
             recognition.interimResults = true;
             recognition.lang = 'en-US';
+
+            start_player = document.createElement('audio');
+            start_player.id = "short_audio1";
+            start_player.src = chrome.extension.getURL("../sounds/success.mp3");
+            start_player.type = "audio/mpeg";
+            document.body.appendChild(start_player);
+
+            stop_player = document.createElement('audio');
+            stop_player.id = "short_audio1";
+            stop_player.src = chrome.extension.getURL("../sounds/reject.mp3");
+            stop_player.type = "audio/mpeg";
+            document.body.appendChild(stop_player);
+
             recognition.onresult = function(evt) {
 
                 var final_sentence = false;
@@ -65,6 +80,7 @@ Spice = {
             };*/
             
             console.log('Listening Started...');
+            
             recognition.start();
     
         }
@@ -237,9 +253,11 @@ Spice = {
 
         if(!command.action) {
             console.log("We could not understand you");
+            stop_player.play();
             return;
         }
 
+        start_player.play();
         this[command.action](command.target, command.value);
     },
 

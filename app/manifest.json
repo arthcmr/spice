@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Spice",
     "description": "Spice",
-    "version": "0.54",
+    "version": "0.63",
     "icons": {
         "128": "images/icon2/icon-128.png"
     },
@@ -39,6 +39,8 @@
     ],
     "web_accessible_resources": [
         "styles/main.css",
-        "images/microphone.png"
+        "images/microphone.png",
+        "sounds/success.mp3",
+        "sounds/reject.mp3"
     ]
 }

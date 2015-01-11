@@ -54,11 +54,9 @@ else {
 function listen() {
 
 	Spice.init();
-
 }
 
 function stopListening() {
 
     Spice.stopListening();
-
 }
