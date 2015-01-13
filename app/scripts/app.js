@@ -34,7 +34,7 @@ else {
     document.head.appendChild(stylesheet);
 
     //add markup
-    $("body").append("<div id='spice_display'><div id='spice_microphone'></div> <div id='spice_sentence'></div> <div id='spice_history'></div> <div id='spice_done'></div></div>");
+    $("body").append("<div id='spice_display' class='shakeIt'><div id='spice_microphone'></div> <div id='spice_sentence'></div> <div id='spice_history'></div> <div id='spice_done'></div></div>");
 
     spice_display.css({
         right: "-330px"

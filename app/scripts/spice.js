@@ -4,7 +4,7 @@ Spice = {
     timer: 0,
     recog: null,
     start_player: null,
-    stop_player: null,
+    stop_player: null, 
 
     init: function() {
 
@@ -95,6 +95,7 @@ Spice = {
     isNewSentence: function() {
         var tmpTime = new Date().getTime();
         if (tmpTime - this.timer > this.interval) {
+            document.getElementById('spice_display').style['border'] = '1px solid rgba(204, 204, 204, 0.5)';
             this.timer = tmpTime;
             return true;
         } else return false;
@@ -158,7 +159,6 @@ Spice = {
                         }
                         else if(SpiceUtils.isAligned(entry)) {                            
                             action = "align";
-
                             value = entry;
                         }
                         else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
@@ -237,11 +237,7 @@ Spice = {
                 break;
             }
         }
-
-        //intent
-
-        //value
-
+        
         return command;
     },
 
@@ -253,12 +249,29 @@ Spice = {
 
         if(!command.action) {
             console.log("We could not understand you");
+
+            this.shakeAnimation();
+
             stop_player.play();
             return;
         }
 
         start_player.play();
+        document.getElementById('spice_display').style['border'] = '1px solid green';
         this[command.action](command.target, command.value);
+    },
+
+    shakeAnimation: function(){
+
+        element = document.getElementById("spice_display");
+
+        element.style['border'] = '1px solid red';
+              
+        element.classList.remove("shakeIt");
+  
+        element.offsetWidth = element.offsetWidth;
+        
+        element.classList.add("shakeIt"); 
     },
 
     changeBackgroundColor: function(target, value) {
