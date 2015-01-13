@@ -315,8 +315,10 @@ Spice = {
             return;
         }
 
-        start_player.play();
+        start_player.play();                
+
         document.getElementById('spice_display').style['border'] = '1px solid green';
+
         this[command.action](command.target, command.value);
     },
 
@@ -335,6 +337,7 @@ Spice = {
 
     changeBackgroundColor: function(target, value) {
         console.log("Trying to change the background");
+        this.p_value = target.css("backgroundColor");
 
         if(value === "lighter" || value === "darker" || value === "brighter")
         {
