@@ -134,6 +134,7 @@ Spice = {
 
         //check confidence
         if(response.confidence > 0.7) {
+            console.log("intent:", response.intent);
             switch(response.intent) {
                 case "paragraph":
                     var target = $("p"),
@@ -256,6 +257,7 @@ Spice = {
                         command.value = value;
                         this.p_action = action;
                         this.p_target= target;
+                        console.log("action=",command.action,"target=",command.target,"value=",command.value);
                     }
                 break;
                 case "undo":
@@ -289,6 +291,19 @@ Spice = {
                         }
                         command.target = this.p_target;
                         command.value = this.p_value;
+                break;
+                case "it":
+                    var target,
+                        value,
+                        action;
+                    if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
+                        var entry = response.entities.agenda_entry[0].value;
+                        value = entry;
+                        command.action = this.p_action;
+                        command.target = this.p_target;
+                        command.value = value;
+                        console.log("action=",command.action,"target=",command.target,"value=",command.value);
+                    }
                 break;
             }
         }
