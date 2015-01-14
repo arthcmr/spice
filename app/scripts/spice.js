@@ -8,6 +8,9 @@ Spice = {
     p_action: "",
     p_target: "",
     p_value: "",
+    p_intent:"",
+    p_ordinal:null,
+    it_flag: 0,
     init: function() {
 
         //in case theres no webkitSpeech
@@ -133,20 +136,35 @@ Spice = {
         var response = wit_response.outcomes[0];
 
         //check confidence
+        it_flag=0;
         if(response.confidence > 0.7) {
-            console.log("intent:", response.intent);
+            if(response.intent === "it"){
+                response.intent = this.p_intent;
+                it_flag=1;
+            }
             switch(response.intent) {
+                case "text":
                 case "paragraph":
+                    this.p_intent= "paragraph";
                     var target = $("p"),
                         value,
-                        action;
+                        action,
+                        order;
                     if(response.entities.ordinal && response.entities.ordinal.length) {
-                        var order = response.entities.ordinal[0].value - 1;
+                        order = response.entities.ordinal[0].value - 1;
+                        this.p_ordinal = order ;
                         target = $("p:eq("+order+")");
+                    }
+                    else if (it_flag==1 && this.p_ordinal != null){
+                            order= this.p_ordinal;
+                            target = $("p:eq("+order+")");
+                    }
+                    else if (it_flag==0){
+                        this.p_ordinal=null;
                     }
                     if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
                         var entry = response.entities.agenda_entry[0].value;
-                       if (SpiceUtils.isColor(entry)) {
+                        if (SpiceUtils.isColor(entry)) {
                             action = "changeFontColor";
                             target.css('-webkit-transition', 'color 1s ease-out');
                             value = entry;
@@ -192,6 +210,8 @@ Spice = {
                     }
                 break;
                 case "background":
+                    this.p_intent= "background";
+                    this.p_ordinal= null;
                     var target = $("body"),
                         value,
                         action;
@@ -208,6 +228,8 @@ Spice = {
                     }
                 break;
                 case "title":
+                    this.p_intent= "title";
+                    this.p_ordinal= null;
                     var target = $("h1"),
                         value,
                         action;
@@ -257,7 +279,7 @@ Spice = {
                         command.value = value;
                         this.p_action = action;
                         this.p_target= target;
-                        console.log("action=",command.action,"target=",command.target,"value=",command.value);
+        
                     }
                 break;
                 case "undo":
@@ -283,7 +305,6 @@ Spice = {
                             command.action = "removeElement";
                             this.p_action="removeElement"
                         }
-
                         else  
                         {
                         command.action = this.p_action;
@@ -291,19 +312,6 @@ Spice = {
                         }
                         command.target = this.p_target;
                         command.value = this.p_value;
-                break;
-                case "it":
-                    var target,
-                        value,
-                        action;
-                    if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
-                        var entry = response.entities.agenda_entry[0].value;
-                        value = entry;
-                        command.action = this.p_action;
-                        command.target = this.p_target;
-                        command.value = value;
-                        console.log("action=",command.action,"target=",command.target,"value=",command.value);
-                    }
                 break;
             }
         }
