@@ -8,6 +8,7 @@ Spice = {
     p_action: "",
     p_target: "",
     p_value: "",
+
     init: function() {
 
         //in case theres no webkitSpeech
@@ -293,10 +294,6 @@ Spice = {
             }
         }
 
-        //intent
-
-        //value
-
         return command;
     },
 
@@ -325,6 +322,8 @@ Spice = {
     shakeAnimation: function(){
 
         element = document.getElementById("spice_display");
+
+        element.className = "shakeIt";
 
         element.style['border'] = '1px solid red';
               
@@ -371,7 +370,7 @@ Spice = {
         this.p_value = target.css("font-size");
         if(value === "bigger" || value === "larger" || value === "increase"){            
             var currentFont = parseInt(target.css('font-size'));            
-            var fontToSet = currentFont + 15;
+            var fontToSet = currentFont + 4;
             var finalFont = fontToSet.toString();                    
             target.css('font-size', finalFont.concat("px"));
             //Not Done !!!
@@ -380,7 +379,7 @@ Spice = {
         else if (value === "smaller" || value === "decrease"){
         if(value === "smaller" || value === "decrease"){
             var currentFont = parseInt(target.css('font-size'));            
-            var fontToSet = currentFont - 15;
+            var fontToSet = currentFont - 4;
             var finalFont = fontToSet.toString();                    
             target.css('font-size', finalFont.concat("px"));
             }
