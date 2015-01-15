@@ -463,7 +463,7 @@ Spice = {
 
     hideElement: function(target, value){    
         console.log("Hiding Element");        
-        target.css('visibility', "hidden");
+        target.css('display', "none");
     },
     showElement: function(target, value){
         if (target.css("visibility") == "hidden")
@@ -474,7 +474,7 @@ Spice = {
         else
         {
             console.log("Restoring Element");
-            target.css('display', "inline");
+            target.css('display', "show");
             this.p_action="restoreElement"
         }
     },
