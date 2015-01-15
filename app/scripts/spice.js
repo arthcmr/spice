@@ -1,4 +1,6 @@
 Spice = {
+
+    //Spice variables
     sentence: "",
     interval: 3000,
     timer: 0,
@@ -11,7 +13,7 @@ Spice = {
     p_intent:"",
     p_ordinal:null,
     it_flag: 0,
-
+    hover_element: null,
 
     init: function() {
 
@@ -70,7 +72,7 @@ Spice = {
                 }
 
             }.bind(this);
-            
+
             /*  
                 I think that recognition.onend is not really necessary. It works good without it. When the Spice icon
                 is pressed it goes into this branch and it keeps executing it like in a while loop (and we have to 
@@ -85,16 +87,22 @@ Spice = {
                 console.log("Restarting speech recognition");                
                 recognition.start();
             };*/
-            
+
             console.log('Listening Started...');
-            
+
+            //capture mouse target at all times
+            var _this = this;
+
+            $('html').on('mousemove', function(evt) {
+                _this.hover_element = evt.toElement;
+            });
+
             recognition.start();
-    
+
         }
     },
 
-    stopListening: function()
-    {
+    stopListening: function() {
         console.log('Listening Stopped...');
         recog.abort();
     },
@@ -138,187 +146,174 @@ Spice = {
         var response = wit_response.outcomes[0];
 
         //check confidence
-        it_flag=0;
-        if(response.confidence > 0.7) {
-            if(response.intent === "it"){
-                response.intent = this.p_intent;
-                it_flag=1;
-            }
-            switch(response.intent) {
-                case "text":
-                case "paragraph":
-                    this.p_intent= "paragraph";
-                    var target = $("p"),
-                        value,
-                        action,
-                        order;
-                    if(response.entities.ordinal && response.entities.ordinal.length) {
-                        order = response.entities.ordinal[0].value - 1;
-                        this.p_ordinal = order ;
-                        target = $("p:eq("+order+")");
-                    }
-                    else if (it_flag==1 && this.p_ordinal != null){
-                            order= this.p_ordinal;
-                            target = $("p:eq("+order+")");
-                    }
-                    else if (it_flag==0){
-                        this.p_ordinal=null;
-                    }
-                    if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
-                        var entry = response.entities.agenda_entry[0].value;
-                        if (SpiceUtils.isColor(entry)) {
-                            action = "changeFontColor";
-                            target.css('-webkit-transition', 'color 1s ease-out');
-                            value = entry;
-                        }
-                        else if (SpiceUtils.isSize(entry)) {
-                            action = "changeFontSize";
-                            target.css('-webkit-transition', 'font-size 1s');
-                            value = entry;
-                        }
-                        else if(SpiceUtils.isFontWeight(entry)) {
-                            action = "changeFontWeight";
-                            value = entry;
-                        }
-                        else if(SpiceUtils.isFontStyle(entry)) {
-                            //PROBLEM WHEN SAYING ITALICS
-                            action = "changeFontStyle";
-                            value = entry;
-                        }
-                        else if(SpiceUtils.isAligned(entry)) {                            
-                            action = "align";
+        if (response.confidence > 0.7) {
 
-                            value = entry;
-                        }
-                        else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
-                            action = "removeElement";
-                            value = entry;
-                        }
-                        else if(entry === "hide") {                            
-                            action = "hideElement";
-                            value = entry;
-                        }
-                        else if(entry === "show" ) {  
-                            console.log("showing")  ;                        
-                            action = "showElement";
-                            value = entry;
-                        }
+            var intent = response.intent,
+                target = this.findTarget(response, wit_response._text);
 
-                        command.action = action;
-                        command.target = target;
-                        command.value = value;
-                        this.p_action = action;
-                        this.p_target= target;
-                    }
-                break;
-                case "background":
-                    this.p_intent= "background";
-                    this.p_ordinal= null;
-                    var target = $("body"),
-                        value,
-                        action;
-                    if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
-                        var entry = response.entities.agenda_entry[0].value;
-                        action = "changeBackgroundColor";
-                        target.css('-webkit-transition', 'background-color 1s ease-out');
-                        value = entry;
-                        command.action = action;
-                        command.target = target;
-                        command.value = value;
-                        this.p_action = action;
-                        this.p_target= target;
-                    }
-                break;
-                case "title":
-                    this.p_intent= "title";
-                    this.p_ordinal= null;
-                    var target = $("h1"),
-                        value,
-                        action;
-                    if(response.entities.agenda_entry && response.entities.agenda_entry.length) {
-                        var entry = response.entities.agenda_entry[0].value;
-                        if(SpiceUtils.isFontWeight(entry)) {
-                            action = "changeFontWeight";
-                            value = entry;
-                        }
-                        else if (SpiceUtils.isColor(entry)) {
-                            action = "changeFontColor";
-                            target.css('-webkit-transition', 'color 1s ease-out');
-                            value = entry;
-                        }
-                        else if (SpiceUtils.isSize(entry)) {
-                            action = "changeFontSize";
-                            target.css('-webkit-transition', 'font-size 1s');
-                            value = entry;
-                        }
-                        else if(SpiceUtils.isFontStyle(entry)) {
-                            //PROBLEM WHEN SAYING ITALICS
-                            action = "changeFontStyle";
-                            value = entry;
-                        }
-                        else if(SpiceUtils.isAligned(entry)) {                            
-                            action = "align";
-                            value = entry;
-                        }
-                        else if(entry === "remove" || entry === "delete" || entry === "get rid of") {                            
-                            action = "removeElement";
-                            //Not working !!!
-                            target.css('-webkit-animation', 'fadeOut 500ms');                            
-                            value = entry;
-                        }
-                        else if(entry === "hide") {                            
-                            action = "hideElement";
-                            //Not working !!!
-                            target.css('-webkit-animation', 'fadeOut 500ms');
-                            value = entry;
-                        }
-                        else if(entry === "show" ) {                            
-                            action = "showElement";
-                            value = entry;
-                        }
-                        command.action = action;
-                        command.target = target;
-                        command.value = value;
-                        this.p_action = action;
-                        this.p_target= target;
-        
-                    }
-                break;
-                case "undo":
-                case "go_back":
-                        console.log("Trying to undo");
-                        if(this.p_action == "hideElement"){
-                            console.log("prev hide now show");
-                            command.action = "showElement";
-                            this.p_action="showElement"
-                        }
-                        else if (this.p_action == "showElement"){
-                            console.log("prev show now hide");
-                            command.action = "hideElement";
-                            this.p_action="hideElement"
-                        }
-                        else if (this.p_action == "removeElement"){
-                            console.log("prev remove now restore");
-                            command.action = "restoreElement";
-                            this.p_action="restoreElement"
-                        }
-                        else if (this.p_action == "restoreElement"){
-                            console.log("prev restore now remove");
-                            command.action = "removeElement";
-                            this.p_action="removeElement"
-                        }
-                        else  
-                        {
-                        command.action = this.p_action;
-                        
-                        }
-                        command.target = this.p_target;
-                        command.value = this.p_value;
-                break;
+            /*
+             * Figure out intent in case of this
+             */
+            if (intent === "this") {
+                var target_tag = target.prop("tagName");
+                if (target_tag === "BODY" || target_tag === "HTML") {
+                    intent = "background";
+                }
+                else {
+                    intent = "text";
+                }
             }
+
+            /*
+             * Paragraph and Title
+             */
+            if (intent === "paragraph" || intent === "title" || intent === "text") {
+
+                if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
+
+                    var actionValue = this.getActionValueText(response); 
+
+                    command.target = target;
+                    command.action = actionValue[0];
+                    command.value = actionValue[1];
+                    this.p_action = command.action;
+                    this.p_target = target;
+                }
+            }
+
+            /*
+             * Background
+             */
+            else if (intent === "background") {
+
+                if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
+
+                    var actionValue = this.getActionValueBackground(response);
+
+                    command.target = target;
+                    command.action = actionValue[0];
+                    command.value = actionValue[1];
+                    this.p_action = command.action;
+                    this.p_target = target;
+                }
+
+            }
+
+            /*
+             * Undo
+             */
+            else if (intent === "undo" || intent === "go back") {
+
+                console.log("Trying to undo");
+                if (this.p_action == "hideElement") {
+                    console.log("prev hide now show");
+                    command.action = "showElement";
+                    this.p_action = "showElement"
+                } else if (this.p_action == "showElement") {
+                    console.log("prev show now hide");
+                    command.action = "hideElement";
+                    this.p_action = "hideElement"
+                } else if (this.p_action == "removeElement") {
+                    console.log("prev remove now restore");
+                    command.action = "restoreElement";
+                    this.p_action = "restoreElement"
+                } else if (this.p_action == "restoreElement") {
+                    console.log("prev restore now remove");
+                    command.action = "removeElement";
+                    this.p_action = "removeElement"
+                } else {
+                    command.action = this.p_action;
+
+                }
+                command.target = this.p_target;
+                command.value = this.p_value;
+
+            }
+
         }
 
         return command;
+    },
+
+    /*
+     * Find target based on response and sentence
+     */
+
+    findTarget: function(response, sentence) {
+
+        var intent = response.intent,
+            target = null;
+
+        if (intent === "this") {
+            target = $(this.hover_element);
+        }
+        else if (intent === "paragraph" || intent === "title") {
+            switch (intent) {
+                case "paragraph":
+                    target_tag = "p";
+                    break;
+                case "title":
+                    target_tag = "h1";
+                    break;
+            }
+            //get the target based on order
+            if (response.entities.ordinal && response.entities.ordinal.length) {
+                var order = response.entities.ordinal[0].value - 1;
+                target = $(target_tag + ":eq(" + order + ")");
+            } else {
+                target = $(target_tag)
+            }
+        }
+        else if (intent === "background") {
+            target = $("body");
+        }
+
+        return target;
+
+    },
+
+    getActionValueText: function(response) {
+        var action, value;
+
+        var entry = response.entities.agenda_entry[0].value;
+        if (SpiceUtils.isColor(entry)) {
+            action = "changeFontColor";
+            value = entry;
+        } else if (SpiceUtils.isSize(entry)) {
+            action = "changeFontSize";
+            value = entry;
+        } else if (SpiceUtils.isFontWeight(entry)) {
+            action = "changeFontWeight";
+            value = entry;
+        } else if (SpiceUtils.isFontStyle(entry)) {
+            //PROBLEM WHEN SAYING ITALICS
+            action = "changeFontStyle";
+            value = entry;
+        } else if (SpiceUtils.isAligned(entry)) {
+            action = "align";
+            value = entry;
+        } else if (entry === "remove" || entry === "delete" || entry === "get rid of") {
+            action = "removeElement";
+            value = entry;
+        } else if (entry === "hide") {
+            action = "hideElement";
+            value = entry;
+        } else if (entry === "show") {
+            console.log("showing");
+            action = "showElement";
+            value = entry;
+        }
+
+        return [action, value];
+    },
+
+    /*
+     * gets a pair [action, value] for background
+     */
+    getActionValueBackground: function(response) {
+        var action = "changeBackgroundColor";
+        var value = response.entities.agenda_entry[0].value;
+        return [action, value];
     },
 
     /*
@@ -327,7 +322,7 @@ Spice = {
     executeCommand: function(command) {
         console.log("Trying to execute command", command);
 
-        if(!command.action) {
+        if (!command.action) {
             console.log("We could not understand you");
 
             this.shakeAnimation();
@@ -336,34 +331,32 @@ Spice = {
             return;
         }
 
-        start_player.play();                
+        start_player.play();
 
-        document.getElementById('spice_display').style['border'] = '1px solid green';
+        $('#spice_display').removeClass('error');
+        $('#spice_display').addClass('success');
 
         this[command.action](command.target, command.value);
     },
 
-    shakeAnimation: function(){
+    shakeAnimation: function() {
 
-        element = document.getElementById("spice_display");
-
-        element.className = "shakeIt";
-
-        element.style['border'] = '1px solid red';
-              
-        element.classList.remove("shakeIt");
-  
-        element.offsetWidth = element.offsetWidth;
-        
-        element.classList.add("shakeIt"); 
+        element = $("#spice_display");
+        element.addClass('error');
+        element.removeClass('success');
+        element.removeClass("shakeIt");
+        setTimeout(function(){
+            element.addClass("shakeIt");
+        },1);
     },
 
     changeBackgroundColor: function(target, value) {
         console.log("Trying to change the background");
         this.p_value = target.css("backgroundColor");
 
-        if(value === "lighter" || value === "darker" || value === "brighter")
-        {
+        target.css('-webkit-transition', 'background-color 1s ease-out');
+
+        if (value === "lighter" || value === "darker" || value === "brighter") {
             var currentRgb = target.css("backgroundColor");
 
             var currentHex = this.rgb2hex(currentRgb);
@@ -377,8 +370,9 @@ Spice = {
         console.log("Trying to change the font color");
         this.p_value = target.css("color");
 
-        if(value === "lighter" || value === "darker" || value === "brighter")
-        {
+        target.css('-webkit-transition', 'color 1s ease-out');
+
+        if (value === "lighter" || value === "darker" || value === "brighter") {
             var currentRgb = target.css("color");
 
             var currentHex = this.rgb2hex(currentRgb);
@@ -407,18 +401,14 @@ Spice = {
             var finalFont = fontToSet.toString();                    
             target.css('font-size', finalFont.concat("px"));
             }
-        } 
-        else if(value === "small" ){                    
+        } else if (value === "small") {
             target.css('font-size', "medium");
-        }   
-        else if(value === "large" ){                    
+        } else if (value === "large") {
             target.css('font-size', "x-large");
-        }     
-        else
-        {
+        } else {
             //exact number for the font size (pixels) - TO BE IMPLEMENTED
             target.css('font-size', value);
-        }   
+        }
     },
 
     changeFontWeight: function(target, value) {
@@ -435,63 +425,53 @@ Spice = {
         target.css('font-style', value);
     },
 
-    align: function(target, value) {        
+    align: function(target, value) {
         console.log("Aligning Text");
         this.p_value = target.css("text-align");
-        if(value === "center" || value === "middle")
-        {
+        if (value === "center" || value === "middle") {
             target.css('text-align', "center");
-        }
-        else if (value === "left")
-        {
+        } else if (value === "left") {
             target.css('text-align', value);
-        }
-        else if (value === "right")
-        {
+        } else if (value === "right") {
             target.css('text-align', value);
-        } 
-        else if (value === "justify")
-        {
+        } else if (value === "justify") {
             target.css('text-align', "justify");
-        } 
+        }
     },
 
-    removeElement: function(target, value){        
-        console.log("Removing Element");        
+    removeElement: function(target, value) {
+        console.log("Removing Element");
         target.css('display', "none");
     },
 
-    hideElement: function(target, value){    
-        console.log("Hiding Element");        
+    hideElement: function(target, value) {
+        console.log("Hiding Element");
         target.css('display', "none");
     },
-    showElement: function(target, value){
-        if (target.css("visibility") == "hidden")
-        {
+    showElement: function(target, value) {
+        if (target.css("visibility") == "hidden") {
             console.log("Showing Element");
             target.css('visibility', "visible");
-        }
-        else
-        {
+        } else {
             console.log("Restoring Element");
             target.css('display', "show");
-            this.p_action="restoreElement"
+            this.p_action = "restoreElement"
         }
     },
 
-    restoreElement: function(target, value){
-        
-            console.log("Restoring Element");
-            target.css('display', "inline");
+    restoreElement: function(target, value) {
+
+        console.log("Restoring Element");
+        target.css('display', "inline");
     },
 
     //Function to convert rgb format to a hex color
-    rgb2hex: function(rgb){
+    rgb2hex: function(rgb) {
         rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
         return (rgb && rgb.length === 4) ? "#" +
-        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+            ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
     }
 
 };
