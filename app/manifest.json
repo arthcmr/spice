@@ -40,6 +40,9 @@
     "web_accessible_resources": [
         "styles/main.css",
         "images/microphone.png",
+        "images/info.png",
+        "images/mute.png",
+        "images/quote.png",
         "sounds/success.mp3",
         "sounds/reject.mp3"
     ]

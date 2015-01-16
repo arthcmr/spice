@@ -19,11 +19,48 @@
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
     z-index: 2147483647;
 }
+
 #spice_display.success {
     border-color: rgb(108, 180, 108);
 }
 #spice_display.error{
     border-color: rgb(222, 89, 89);
+
+#spice_intro {
+    font-family: Helvetica, Arial, sans-serif;
+    display: block;
+    text-align: center;
+    position: fixed;
+    overflow-y: hidden;
+    font-size: 11px;
+    padding: 15px;
+    width: 500px;
+    height: 500px;
+    left: 15px;
+    bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid rgba(204, 204, 204, 0.5);
+    background: #f7f7f7;
+    border: 1px solid rgb(221, 221, 221);
+    -webkit-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    z-index: 2147483647;
+}
+
+#spice_info {
+    margin: -5px 5px;
+    width: 20px;
+    height: 20px;    
+    background: url(../images/info.png); 
+    background-repeat: no-repeat;
+    background-size: 15px 15px;
+}
+
+.right {
+    position: absolute;
+    right: 0px;
+    width: 300px;    
 }
 
 #spice_microphone {
