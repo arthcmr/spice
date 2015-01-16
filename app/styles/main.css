@@ -29,8 +29,8 @@
     font-size: 11px;
     padding: 15px;
     width: 500px;
-    max-height: 500px;
-    right: 15px;
+    height: 500px;
+    left: 15px;
     bottom: 15px;
     border-radius: 5px;
     border: 1px solid rgba(204, 204, 204, 0.5);
@@ -40,6 +40,21 @@
     -moz-box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
     z-index: 2147483647;
+}
+
+#spice_info {
+    margin: -5px 5px;
+    width: 20px;
+    height: 20px;    
+    background: url(../images/info.png); 
+    background-repeat: no-repeat;
+    background-size: 15px 15px;
+}
+
+.right {
+    position: absolute;
+    right: 0px;
+    width: 300px;    
 }
 
 #spice_microphone {
