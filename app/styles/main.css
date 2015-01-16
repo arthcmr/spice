@@ -1,4 +1,4 @@
-#spice_display, #spice_intro {
+#spice_display {
     font-family: Helvetica, Arial, sans-serif;
     display: block;
     text-align: center;
@@ -25,6 +25,7 @@
 }
 #spice_display.error{
     border-color: rgb(222, 89, 89);
+}
 
 #spice_intro {
     font-family: Helvetica, Arial, sans-serif;
