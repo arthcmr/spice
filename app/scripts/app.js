@@ -27,7 +27,7 @@ if (spice_intro && spice_intro.is(':visible')) {
 else {
 
     //add markup    
-    $("body").append("<div id='spice_intro'>Welcome</div>");
+    $("body").append("<div id='spice_intro'>Welcome To Spice</div>");
     spice_intro = $("#spice_intro");
     spice_intro.css({
         left: "-330px"

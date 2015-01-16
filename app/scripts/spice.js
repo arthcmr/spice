@@ -198,6 +198,22 @@ Spice = {
                 }
 
             }
+           /*
+            * Picture
+            */
+            else if (intent === "picture") {
+
+                if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
+
+                    var actionValue = this.getActionValuePicture(response);
+
+                    command.target = target;
+                    command.action = actionValue[0];
+                    command.value = actionValue[1];
+                    this.p_action = command.action;
+                    this.p_target = target;
+                }
+            }
 
             /*
              * Undo
@@ -247,13 +263,17 @@ Spice = {
         if (intent === "this") {
             target = $(this.hover_element);
         }
-        else if (intent === "paragraph" || intent === "title") {
+        // EVERYTHING THAT NEEDS ORDINAL COMES HERE !!!
+        else if (intent === "paragraph" || intent === "title" || intent === "picture") {
             switch (intent) {
                 case "paragraph":
                     target_tag = "p";
                     break;
                 case "title":
                     target_tag = "h1";
+                    break;
+                case "picture":
+                    target_tag = "img";
                     break;
             }
             //get the target based on order
@@ -265,6 +285,9 @@ Spice = {
             }
         }
         else if (intent === "background") {
+            target = $("body");
+        }
+        else if (intent === "text") {
             target = $("body");
         }
 
@@ -313,6 +336,23 @@ Spice = {
     getActionValueBackground: function(response) {
         var action = "changeBackgroundColor";
         var value = response.entities.agenda_entry[0].value;
+        return [action, value];
+    },
+
+    getActionValuePicture: function(response) {
+        var action = "changePicture";
+        var value = response.entities.agenda_entry[0].value;
+
+        if(value === "hide"){
+            action = "hideElement";
+        }
+        else if (value === "remove" || value === "delete" || value === "get rid of") {
+            action = "removeElement";            
+        }
+        else if (value === "show") {
+            action = "showElement";            
+        }
+        
         return [action, value];
     },
 
@@ -366,6 +406,30 @@ Spice = {
         target.css('backgroundColor', color);
     },
 
+    changePicture: function(target, value) {
+        console.log("Trying to change the picture");
+        this.p_value = target.width();     
+        var multiplier = 1;   
+
+
+        console.log(value);
+
+        if(SpiceUtils.isSize(value))
+        {
+            if(value === "bigger" || value === "larger" || value === "increase"){            
+                multiplier  = 1.25;                 
+            }
+            else if(value === "smaller" || value === "decrease" || value === "small"){ 
+                multiplier = 0.75 ;
+            }           
+                var width = parseInt(target.width()) * multiplier;    
+                var height = parseInt(target.height()) * multiplier;            
+                target.width(width);
+                target.height(height);  
+        }        
+        
+    },
+
     changeFontColor: function(target, value) {
         console.log("Trying to change the font color");
         this.p_value = target.css("color");
@@ -390,9 +454,7 @@ Spice = {
             var currentFont = parseInt(target.css('font-size'));            
             var fontToSet = currentFont + 4;
             var finalFont = fontToSet.toString();                    
-            target.css('font-size', finalFont.concat("px"));
-            //Not Done !!!
-            //target.css('backgroundColor', 'gray');            
+            target.css('font-size', finalFont.concat("px"));          
         }
         else if (value === "smaller" || value === "decrease"){
         if(value === "smaller" || value === "decrease"){
@@ -409,6 +471,8 @@ Spice = {
             //exact number for the font size (pixels) - TO BE IMPLEMENTED
             target.css('font-size', value);
         }
+
+        target.css('-webkit-transition', 'font-size 1s ease-out');
     },
 
     changeFontWeight: function(target, value) {
@@ -448,21 +512,21 @@ Spice = {
         console.log("Hiding Element");
         target.css('display', "none");
     },
+
     showElement: function(target, value) {
         if (target.css("visibility") == "hidden") {
             console.log("Showing Element");
             target.css('visibility', "visible");
         } else {
             console.log("Restoring Element");
-            target.css('display', "show");
+            target.css('display', "block");
             this.p_action = "restoreElement"
         }
     },
 
     restoreElement: function(target, value) {
-
         console.log("Restoring Element");
-        target.css('display', "inline");
+        target.css('display', "block");
     },
 
     //Function to convert rgb format to a hex color
