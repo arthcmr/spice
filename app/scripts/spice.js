@@ -144,10 +144,13 @@ Spice = {
         };
 
         var response = wit_response.outcomes[0];
-
+        it_flag=0;
         //check confidence
         if (response.confidence > 0.7) {
-
+             if(response.intent === "it"){
+                response.intent = this.p_intent;
+                it_flag=1;
+            }
             var intent = response.intent,
                 target = this.findTarget(response, wit_response._text);
 
@@ -158,21 +161,29 @@ Spice = {
                 var target_tag = target.prop("tagName");
                 if (target_tag === "BODY" || target_tag === "HTML") {
                     intent = "background";
+                    
                 }
                 else {
                     intent = "text";
                 }
+                this.p_intent="paragraph";
             }
 
             /*
              * Paragraph and Title
              */
             if (intent === "paragraph" || intent === "title" || intent === "text") {
+                if (intent==="paragraph") 
+                    this.p_intent = "paragraph";
+                else if (intent==="title") 
+                    this.p_intent = "title";
+                else if(intent==="text")
+                    this.p_intent= "text";
+
 
                 if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
 
                     var actionValue = this.getActionValueText(response); 
-
                     command.target = target;
                     command.action = actionValue[0];
                     command.value = actionValue[1];
@@ -185,6 +196,7 @@ Spice = {
              * Background
              */
             else if (intent === "background") {
+                this.p_intent= "background";
 
                 if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
 
@@ -202,7 +214,7 @@ Spice = {
             * Picture
             */
             else if (intent === "picture") {
-
+                this.p_intent= "picture";
                 if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
 
                     var actionValue = this.getActionValuePicture(response);
@@ -258,8 +270,8 @@ Spice = {
     findTarget: function(response, sentence) {
 
         var intent = response.intent,
-            target = null;
-
+            target = null,
+            order;
         if (intent === "this") {
             target = $(this.hover_element);
         }
@@ -278,16 +290,23 @@ Spice = {
             }
             //get the target based on order
             if (response.entities.ordinal && response.entities.ordinal.length) {
-                var order = response.entities.ordinal[0].value - 1;
+                order = response.entities.ordinal[0].value - 1;
+                this.p_ordinal = order ;
                 target = $(target_tag + ":eq(" + order + ")");
-            } else {
+            } else if (it_flag==0) {
                 target = $(target_tag)
+    
+            }
+            else if (it_flag==1 && this.p_ordinal !=null){
+                target = $(target_tag + ":eq(" + this.p_ordinal + ")");
             }
         }
         else if (intent === "background") {
             target = $("body");
         }
         else if (intent === "text") {
+            console.log("i am here");
+            this.p_ordinal=null;
             target = $("body");
         }
 
@@ -361,7 +380,7 @@ Spice = {
      */
     executeCommand: function(command) {
         console.log("Trying to execute command", command);
-
+        console.log("order=", this.p_ordinal);
         if (!command.action) {
             console.log("We could not understand you");
 
