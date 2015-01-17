@@ -5,9 +5,9 @@ var showBox = function(){
 
 if (spice_intro && spice_intro.is(':visible')) {
     spice_intro.animate({
-        left: "30px"
+        right: "30px"
     }, 200).animate({
-        left: "-330px"
+        right: "-330px"
     }, 300, function() {
         spice_intro.hide(); 
              
@@ -15,11 +15,11 @@ if (spice_intro && spice_intro.is(':visible')) {
 } else if (spice_intro && spice_intro.is(':hidden')) {
     spice_intro.show();
     spice_intro.animate({
-        left: "-300px"
+        right: "-300px"
     }, 0).animate({
-        left: "30px"
+        right: "30px"
     }, 300).animate({
-        left: "15px"
+        right: "15px"
     }, 200);
         
 }
@@ -27,24 +27,22 @@ if (spice_intro && spice_intro.is(':visible')) {
 else {
 
     //add markup    
-    $("body").append("<div id='spice_intro'>Welcome To Spice</div>");
-    spice_intro = $("#spice_intro");
+    $("body").append("<div id='spice_intro'> <div id='spice_logo'></div> <p>Instructions How to Use Spice Extension</p> Say following commands:<br> <br> <table style='width:100%'><tr><td><div id='spice_quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr><tr><td><div id='spice_quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr><tr><td><div id='spice_quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr></table></div>");
+    spice_intro = $("#spice_intro");    
     spice_intro.css({
-        left: "-330px"
+        right: "-330px"
     });
     spice_intro.show();
     spice_intro.animate({
-        left: "-300px"
+        right: "-300px"
     }, 0).animate({
-        left: "30px"
+        right: "30px"
     }, 300).animate({
-        left: "15px"
+        right: "15px"
     }, 200);
     
     }
-
 }
-
 //the div exists
 if (spice_display.is(':visible')) {
     spice_display.animate({
@@ -53,7 +51,8 @@ if (spice_display.is(':visible')) {
         right: "-330px"
     }, 300, function() {
         spice_display.hide(); 
-            
+        //Close Introduction Page if both Spice and Box are open
+        showBox();
         stopListening();
     });
 } else if (spice_display.is(':hidden')) {

@@ -20,13 +20,6 @@
     z-index: 2147483647;
 }
 
-#spice_display.success {
-    border-color: rgb(108, 180, 108);
-}
-#spice_display.error{
-    border-color: rgb(222, 89, 89);
-}
-
 #spice_intro {
     font-family: Helvetica, Arial, sans-serif;
     display: block;
@@ -35,10 +28,10 @@
     overflow-y: hidden;
     font-size: 11px;
     padding: 15px;
-    width: 500px;
-    height: 500px;
-    left: 15px;
-    bottom: 15px;
+    width: 150px;
+    height: 350px;
+    right: 15px;
+    top: 15px;
     border-radius: 5px;
     border: 1px solid rgba(204, 204, 204, 0.5);
     background: #f7f7f7;
@@ -49,6 +42,13 @@
     z-index: 2147483647;
 }
 
+#spice_display.success {
+    border-color: rgb(108, 180, 108);
+}
+#spice_display.error{
+    border-color: rgb(222, 89, 89);
+}
+
 #spice_info {
     margin: -5px 5px;
     width: 20px;
@@ -56,6 +56,26 @@
     background: url(../images/info.png); 
     background-repeat: no-repeat;
     background-size: 15px 15px;
+}
+
+#spice_quote {
+    margin: 5px -5px;
+    display: inline;
+    width: 20px;
+    height: 20px;    
+    background: url(../images/quote.png); 
+    background-repeat: no-repeat;
+    background-size: 15px 15px;
+}
+
+#spice_logo {
+    margin: 5px auto;
+    width: 30px;
+    height: 30px;  
+    background: url(../images/icon2/icon-128.png); 
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 30px 30px;
 }
 
 .right {
