@@ -36,7 +36,8 @@ function bootstrap() {
         });
 
         //add markup for spice info (tutorial)
-        $("body").append("<div id='spice-intro'> <div id='spice-logo'></div> <p>Instructions How to Use Spice Extension</p> Say following commands:<br> <br> <table style='width:100%'><tr><td><div id='spice-quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr><tr><td><div id='spice-quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr><tr><td><div id='spice-quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr></table></div>");
+        $("body").append("<div id='spice-intro'> <div id='spice-logo'></div> <p style='color: black'>How to Use <strong style='color: red'>Spice</strong> Extension</p> <br> <br> Try out following commands:<br> <br> <table style='width:100%'><tr><td><div id='spice-quote'> </div></td><td>&quot;Change Background to Green&quot;</td></tr><tr><td><div id='spice-quote'> </div></td><td>&quot;Increase Title&quot;</td></tr><tr><td><div id='spice-quote'> </div></td><td>&quot;Hide 1st Paragraph&quot;</td></tr><tr><td><div id='spice-quote'> </div></td><td>&quot;Make 1st Photo Bigger;&quot;</td></tr><tr><td><div id='spice-quote'> </div></td><td>&quot;Make 2nd Paragraph Blue&quot;</td></tr></table></div>");
+        
         spice_intro = $("#spice-intro");
         spice_intro.hide();
         spice_intro.css({

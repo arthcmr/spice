@@ -509,8 +509,10 @@ Spice = {
                 var t = $(this);
                 var width = parseInt(t.width()) * multiplier;
                 var height = parseInt(t.height()) * multiplier;
-                t.width(width);
-                t.height(height);
+                t.animate({
+                    width: width,
+                    height: height
+                }, 300);
             });
         }
 
