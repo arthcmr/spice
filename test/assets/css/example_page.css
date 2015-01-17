@@ -11,3 +11,15 @@ h1 {
 .paragraph {
     padding: 5px;
 }
+.img-container {
+	text-align: center;
+}
+img {
+	width: 100%;
+	height: auto;
+}
+
+footer {
+	text-align: center;
+	font-size: 0.8em;
+}
