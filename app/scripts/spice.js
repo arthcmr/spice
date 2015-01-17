@@ -474,16 +474,18 @@ Spice = {
         console.log("Trying to change the background");
         this.p_value = target.css("backgroundColor");
 
-        target.css('-webkit-transition', 'background-color 0.2s ease-out');
+        target.each(function() {
+            var t = $(this);
+            t.css('-webkit-transition', 'background-color 0.2s ease-out');
 
-        if (value === "lighter" || value === "darker" || value === "brighter") {
-            var currentRgb = target.css("backgroundColor");
+            if (value === "lighter" || value === "darker" || value === "brighter") {
+                var currentRgb = t.css("backgroundColor");
+                var currentHex = SpiceUtils.rgb2hex(currentRgb);
+            }
 
-            var currentHex = SpiceUtils.rgb2hex(currentRgb);
-        }
-
-        var color = SpiceUtils.stringToColor(value, currentHex, target.css('backgroundColor'));
-        target.css('backgroundColor', color);
+            var color = SpiceUtils.stringToColor(value, currentHex, t.css('backgroundColor'));
+            t.css('backgroundColor', color);
+        });
     },
 
     /*
@@ -496,19 +498,20 @@ Spice = {
         this.p_value = target.width();
         var multiplier = 1;
 
-
-        console.log(value);
-
         if (SpiceUtils.isSize(value)) {
             if (value === "bigger" || value === "larger" || value === "increase") {
                 multiplier = 1.25;
             } else if (value === "smaller" || value === "decrease" || value === "small") {
                 multiplier = 0.75;
             }
-            var width = parseInt(target.width()) * multiplier;
-            var height = parseInt(target.height()) * multiplier;
-            target.width(width);
-            target.height(height);
+
+            target.each(function() {
+                var t = $(this);
+                var width = parseInt(t.width()) * multiplier;
+                var height = parseInt(t.height()) * multiplier;
+                t.width(width);
+                t.height(height);
+            });
         }
 
     },
@@ -524,14 +527,17 @@ Spice = {
 
         target.css('-webkit-transition', 'color 0.2s ease-out');
 
-        if (value === "lighter" || value === "darker" || value === "brighter") {
-            var currentRgb = target.css("color");
+        target.each(function() {
+            var t = $(this);
 
-            var currentHex = SpiceUtils.rgb2hex(currentRgb);
-        }
+            if (value === "lighter" || value === "darker" || value === "brighter") {
+                var currentRgb = t.css("color");
+                var currentHex = SpiceUtils.rgb2hex(currentRgb);
+            }
 
-        var color = SpiceUtils.stringToColor(value, currentHex, target.css('color'));
-        target.css('color', color);
+            var color = SpiceUtils.stringToColor(value, currentHex, t.css('color'));
+            t.css('color', color);
+        });
     },
 
     /*
@@ -543,28 +549,33 @@ Spice = {
         //INCREASE NOT WORKING !!!
         console.log("Trying to change font size");
         this.p_value = target.css("font-size");
-        if (value === "bigger" || value === "larger" || value === "increase") {
-            var currentFont = parseInt(target.css('font-size'));
-            var fontToSet = currentFont + 4;
-            var finalFont = fontToSet.toString();
-            target.css('font-size', finalFont.concat("px"));
-        } else if (value === "smaller" || value === "decrease") {
-            if (value === "smaller" || value === "decrease") {
-                var currentFont = parseInt(target.css('font-size'));
-                var fontToSet = currentFont - 4;
-                var finalFont = fontToSet.toString();
-                target.css('font-size', finalFont.concat("px"));
-            }
-        } else if (value === "small") {
-            target.css('font-size', "medium");
-        } else if (value === "large") {
-            target.css('font-size', "x-large");
-        } else {
-            //exact number for the font size (pixels) - TO BE IMPLEMENTED
-            target.css('font-size', value);
-        }
 
-        target.css('-webkit-transition', 'font-size 0.2s ease-out');
+        target.each(function() {
+            var t = $(this);
+
+            if (value === "bigger" || value === "larger" || value === "increase") {
+                var currentFont = parseInt(t.css('font-size'));
+                var fontToSet = currentFont + 4;
+                var finalFont = fontToSet.toString();
+                t.css('font-size', finalFont.concat("px"));
+            } else if (value === "smaller" || value === "decrease") {
+                if (value === "smaller" || value === "decrease") {
+                    var currentFont = parseInt(t.css('font-size'));
+                    var fontToSet = currentFont - 4;
+                    var finalFont = fontToSet.toString();
+                    t.css('font-size', finalFont.concat("px"));
+                }
+            } else if (value === "small") {
+                t.css('font-size', "medium");
+            } else if (value === "large") {
+                t.css('font-size', "x-large");
+            } else {
+                //exact number for the font size (pixels) - TO BE IMPLEMENTED
+                t.css('font-size', value);
+            }
+
+            t.css('-webkit-transition', 'font-size 0.2s ease-out');
+        });
     },
 
     /*
@@ -576,7 +587,11 @@ Spice = {
         // bold
         console.log("Changing Font Weight");
         this.p_value = target.css("font-weight");
-        target.css('font-weight', value);
+
+        target.each(function() {
+            var t = $(this);
+            t.css('font-weight', value);
+        });
     },
 
     /*
@@ -588,7 +603,11 @@ Spice = {
         //italics, normal, oblique
         console.log("Changing Font Style");
         this.p_value = target.css("font-style");
-        target.css('font-style', value);
+
+        target.each(function() {
+            var t = $(this);
+            t.css('font-style', value);
+        });
     },
 
     /*
@@ -599,15 +618,21 @@ Spice = {
     align: function(target, value) {
         console.log("Aligning Text");
         this.p_value = target.css("text-align");
-        if (value === "center" || value === "middle") {
-            target.css('text-align', "center");
-        } else if (value === "left") {
-            target.css('text-align', value);
-        } else if (value === "right") {
-            target.css('text-align', value);
-        } else if (value === "justify") {
-            target.css('text-align', "justify");
-        }
+
+        target.each(function() {
+            var t = $(this);
+
+            if (value === "center" || value === "middle") {
+                t.css('text-align', "center");
+            } else if (value === "left") {
+                t.css('text-align', value);
+            } else if (value === "right") {
+                t.css('text-align', value);
+            } else if (value === "justify") {
+                t.css('text-align', "justify");
+            }
+
+        });
     },
 
     /*
