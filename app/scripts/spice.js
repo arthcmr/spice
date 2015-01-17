@@ -1,3 +1,7 @@
+/*
+ * Spice module
+ */
+
 Spice = {
 
     //Spice variables
@@ -10,10 +14,14 @@ Spice = {
     p_action: "",
     p_target: "",
     p_value: "",
-    p_intent:"",
-    p_ordinal:null,
+    p_intent: "",
+    p_ordinal: null,
     it_flag: 0,
     hover_element: null,
+
+    /*
+     * Initializes spice
+     */
 
     init: function() {
 
@@ -88,25 +96,46 @@ Spice = {
                 recognition.start();
             };*/
 
+
+            //start voice recognition
+            recognition.start();
             console.log('Listening Started...');
 
             //capture mouse target at all times
             var _this = this;
-
             $('html').on('mousemove', function(evt) {
-                _this.hover_element = evt.toElement;
+
+                //if hovering the spice elements, do not recognize it
+                _this.hover_element = $(evt.toElement);
+
+                if (_this.hover_element.attr("id") === 'spice-display' || _this.hover_element.attr("id") === '#spice-intro' || _this.hover_element.parents('#spice-display').length || _this.hover_element.parents('#spice-intro').length) {
+
+                    _this.hover_element = undefined
+                    $('.spice-hovered').removeClass('spice-hovered');
+
+                }
+                //otherwise, color it
+                else if (!_this.hover_element.hasClass('spice-hovered')) {
+
+                    $('.spice-hovered').removeClass('spice-hovered');
+                    _this.hover_element.addClass('spice-hovered');
+
+                }
             });
-
-            recognition.start();
-
         }
     },
 
+    /*
+     * stops listening for user input
+     */
     stopListening: function() {
         console.log('Listening Stopped...');
         recog.abort();
     },
 
+    /*
+     * Checks whether the user has started a new sentence
+     */
     isNewSentence: function() {
         var tmpTime = new Date().getTime();
         if (tmpTime - this.timer > this.interval) {
@@ -115,6 +144,10 @@ Spice = {
         } else return false;
     },
 
+    /*
+     * Sends user sentence to wit.ai
+     * @param {String} sentence the sentence the user spoke
+     */
     processSentence: function(sentence) {
         var pars = {
             'q': sentence,
@@ -135,6 +168,8 @@ Spice = {
 
     /*
      * gets the wit response and interprets its fields into Spice actions
+     * @param {Object} wit_response response from wit.ai
+     * @returns {Object} the command to be executed by Spice
      */
     interpretWit: function(wit_response) {
         var command = {
@@ -144,12 +179,12 @@ Spice = {
         };
 
         var response = wit_response.outcomes[0];
-        it_flag=0;
+        it_flag = 0;
         //check confidence
         if (response.confidence > 0.7) {
-             if(response.intent === "it"){
+            if (response.intent === "it") {
                 response.intent = this.p_intent;
-                it_flag=1;
+                it_flag = 1;
             }
             var intent = response.intent,
                 target = this.findTarget(response, wit_response._text);
@@ -161,32 +196,31 @@ Spice = {
                 var target_tag = target.prop("tagName");
                 if (target_tag === "BODY" || target_tag === "HTML") {
                     intent = "background";
-                    
-                }
-                else {
+
+                } else {
                     intent = "text";
                 }
-                this.p_intent="paragraph";
+                this.p_intent = "paragraph";
             }
 
             /*
              * Paragraph and Title
              */
             if (intent === "paragraph" || intent === "title" || intent === "text") {
-                if (intent==="paragraph") 
+                if (intent === "paragraph")
                     this.p_intent = "paragraph";
-                else if (intent==="title") 
+                else if (intent === "title")
                     this.p_intent = "title";
-                else if(intent==="text")
-                    this.p_intent= "text";
+                else if (intent === "text")
+                    this.p_intent = "text";
 
 
                 if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
 
-                    var actionValue = this.getActionValueText(response); 
+                    var actionValue = this.getActionValueText(response);
                     command.target = target;
-                    command.action = actionValue[0];
-                    command.value = actionValue[1];
+                    command.action = actionValue.action;
+                    command.value = actionValue.value;
                     this.p_action = command.action;
                     this.p_target = target;
                 }
@@ -196,32 +230,32 @@ Spice = {
              * Background
              */
             else if (intent === "background") {
-                this.p_intent= "background";
+                this.p_intent = "background";
 
                 if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
 
                     var actionValue = this.getActionValueBackground(response);
 
                     command.target = target;
-                    command.action = actionValue[0];
-                    command.value = actionValue[1];
+                    command.action = actionValue.action;
+                    command.value = actionValue.value;
                     this.p_action = command.action;
                     this.p_target = target;
                 }
 
             }
-           /*
-            * Picture
-            */
+            /*
+             * Picture
+             */
             else if (intent === "picture") {
-                this.p_intent= "picture";
+                this.p_intent = "picture";
                 if (response.entities.agenda_entry && response.entities.agenda_entry.length) {
 
                     var actionValue = this.getActionValuePicture(response);
 
                     command.target = target;
-                    command.action = actionValue[0];
-                    command.value = actionValue[1];
+                    command.action = actionValue.action;
+                    command.value = actionValue.value;
                     this.p_action = command.action;
                     this.p_target = target;
                 }
@@ -264,16 +298,17 @@ Spice = {
     },
 
     /*
-     * Find target based on response and sentence
+     * finds target based on response and sentence
+     * @param {Object} response the object with the response config
+     * @param {String} sentence the original sentence
      */
-
     findTarget: function(response, sentence) {
 
         var intent = response.intent,
             target = null,
             order;
         if (intent === "this") {
-            target = $(this.hover_element);
+            target = this.hover_element;
         }
         // EVERYTHING THAT NEEDS ORDINAL COMES HERE !!!
         else if (intent === "paragraph" || intent === "title" || intent === "picture") {
@@ -291,22 +326,19 @@ Spice = {
             //get the target based on order
             if (response.entities.ordinal && response.entities.ordinal.length) {
                 order = response.entities.ordinal[0].value - 1;
-                this.p_ordinal = order ;
+                this.p_ordinal = order;
                 target = $(target_tag + ":eq(" + order + ")");
-            } else if (it_flag==0) {
+            } else if (it_flag == 0) {
                 target = $(target_tag)
-    
-            }
-            else if (it_flag==1 && this.p_ordinal !=null){
+
+            } else if (it_flag == 1 && this.p_ordinal != null) {
                 target = $(target_tag + ":eq(" + this.p_ordinal + ")");
             }
-        }
-        else if (intent === "background") {
+        } else if (intent === "background") {
             target = $("body");
-        }
-        else if (intent === "text") {
+        } else if (intent === "text") {
             console.log("i am here");
-            this.p_ordinal=null;
+            this.p_ordinal = null;
             target = $("body");
         }
 
@@ -314,6 +346,11 @@ Spice = {
 
     },
 
+    /*
+     * gets the action and the value of text intents in a response
+     * @param {Object} response the object with the response config
+     * @returns {Object} an object with action, followed by the value
+     */
     getActionValueText: function(response) {
         var action, value;
 
@@ -346,37 +383,53 @@ Spice = {
             value = entry;
         }
 
-        return [action, value];
+        return {
+            action: action,
+            value: value
+        };
     },
 
     /*
-     * gets a pair [action, value] for background
+     * gets the action and the value of background intents in a response
+     * @param {Object} response the object with the response config
+     * @returns {Object} an object with action, followed by the value
      */
     getActionValueBackground: function(response) {
         var action = "changeBackgroundColor";
         var value = response.entities.agenda_entry[0].value;
-        return [action, value];
+
+        return {
+            action: action,
+            value: value
+        };
     },
 
+    /*
+     * gets the action and the value of picture intents in a response
+     * @param {Object} response the object with the response config
+     * @returns {Object} an object with action, followed by the value
+     */
     getActionValuePicture: function(response) {
         var action = "changePicture";
         var value = response.entities.agenda_entry[0].value;
 
-        if(value === "hide"){
+        if (value === "hide") {
             action = "hideElement";
+        } else if (value === "remove" || value === "delete" || value === "get rid of") {
+            action = "removeElement";
+        } else if (value === "show") {
+            action = "showElement";
         }
-        else if (value === "remove" || value === "delete" || value === "get rid of") {
-            action = "removeElement";            
-        }
-        else if (value === "show") {
-            action = "showElement";            
-        }
-        
-        return [action, value];
+
+        return {
+            action: action,
+            value: value
+        };
     },
 
     /*
-     * receives a command object and performs the action
+     * executes a spice command
+     * @param {Object} command the spice formatted command
      */
     executeCommand: function(command) {
         console.log("Trying to execute command", command);
@@ -398,17 +451,25 @@ Spice = {
         this[command.action](command.target, command.value);
     },
 
+    /*
+     * shakes the spice display
+     */
     shakeAnimation: function() {
 
         element = $("#spice-display");
         element.addClass('spice-error');
         element.removeClass('spice-success');
         element.removeClass("spice-shakeIt");
-        setTimeout(function(){
+        setTimeout(function() {
             element.addClass("spice-shakeIt");
-        },1);
+        }, 1);
     },
 
+    /*
+     * changes the background to a certain color
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new value
+     */
     changeBackgroundColor: function(target, value) {
         console.log("Trying to change the background");
         this.p_value = target.css("backgroundColor");
@@ -418,37 +479,45 @@ Spice = {
         if (value === "lighter" || value === "darker" || value === "brighter") {
             var currentRgb = target.css("backgroundColor");
 
-            var currentHex = this.rgb2hex(currentRgb);
+            var currentHex = SpiceUtils.rgb2hex(currentRgb);
         }
 
         var color = SpiceUtils.stringToColor(value, currentHex, target.css('backgroundColor'));
         target.css('backgroundColor', color);
     },
 
+    /*
+     * changes the size of pictures
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new size
+     */
     changePicture: function(target, value) {
         console.log("Trying to change the picture");
-        this.p_value = target.width();     
-        var multiplier = 1;   
+        this.p_value = target.width();
+        var multiplier = 1;
 
 
         console.log(value);
 
-        if(SpiceUtils.isSize(value))
-        {
-            if(value === "bigger" || value === "larger" || value === "increase"){            
-                multiplier  = 1.25;                 
+        if (SpiceUtils.isSize(value)) {
+            if (value === "bigger" || value === "larger" || value === "increase") {
+                multiplier = 1.25;
+            } else if (value === "smaller" || value === "decrease" || value === "small") {
+                multiplier = 0.75;
             }
-            else if(value === "smaller" || value === "decrease" || value === "small"){ 
-                multiplier = 0.75 ;
-            }           
-                var width = parseInt(target.width()) * multiplier;    
-                var height = parseInt(target.height()) * multiplier;            
-                target.width(width);
-                target.height(height);  
-        }        
-        
+            var width = parseInt(target.width()) * multiplier;
+            var height = parseInt(target.height()) * multiplier;
+            target.width(width);
+            target.height(height);
+        }
+
     },
 
+    /*
+     * changes the font to a certain color
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new color
+     */
     changeFontColor: function(target, value) {
         console.log("Trying to change the font color");
         this.p_value = target.css("color");
@@ -458,29 +527,33 @@ Spice = {
         if (value === "lighter" || value === "darker" || value === "brighter") {
             var currentRgb = target.css("color");
 
-            var currentHex = this.rgb2hex(currentRgb);
+            var currentHex = SpiceUtils.rgb2hex(currentRgb);
         }
 
         var color = SpiceUtils.stringToColor(value, currentHex, target.css('color'));
         target.css('color', color);
     },
 
+    /*
+     * changes the font to a different size
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new size
+     */
     changeFontSize: function(target, value) {
         //INCREASE NOT WORKING !!!
         console.log("Trying to change font size");
         this.p_value = target.css("font-size");
-        if(value === "bigger" || value === "larger" || value === "increase"){            
-            var currentFont = parseInt(target.css('font-size'));            
+        if (value === "bigger" || value === "larger" || value === "increase") {
+            var currentFont = parseInt(target.css('font-size'));
             var fontToSet = currentFont + 4;
-            var finalFont = fontToSet.toString();                    
-            target.css('font-size', finalFont.concat("px"));          
-        }
-        else if (value === "smaller" || value === "decrease"){
-        if(value === "smaller" || value === "decrease"){
-            var currentFont = parseInt(target.css('font-size'));            
-            var fontToSet = currentFont - 4;
-            var finalFont = fontToSet.toString();                    
+            var finalFont = fontToSet.toString();
             target.css('font-size', finalFont.concat("px"));
+        } else if (value === "smaller" || value === "decrease") {
+            if (value === "smaller" || value === "decrease") {
+                var currentFont = parseInt(target.css('font-size'));
+                var fontToSet = currentFont - 4;
+                var finalFont = fontToSet.toString();
+                target.css('font-size', finalFont.concat("px"));
             }
         } else if (value === "small") {
             target.css('font-size', "medium");
@@ -494,6 +567,11 @@ Spice = {
         target.css('-webkit-transition', 'font-size 1s ease-out');
     },
 
+    /*
+     * changes the font to a different weight
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new weight
+     */
     changeFontWeight: function(target, value) {
         // bold
         console.log("Changing Font Weight");
@@ -501,6 +579,11 @@ Spice = {
         target.css('font-weight', value);
     },
 
+    /*
+     * changes the font to a different style
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new style
+     */
     changeFontStyle: function(target, value) {
         //italics, normal, oblique
         console.log("Changing Font Style");
@@ -508,6 +591,11 @@ Spice = {
         target.css('font-style', value);
     },
 
+    /*
+     * aligns text to one of the 4 possible alignments
+     * @param {Object} target the jquery object with the target
+     * @param {String} value the new alignment
+     */
     align: function(target, value) {
         console.log("Aligning Text");
         this.p_value = target.css("text-align");
@@ -522,17 +610,29 @@ Spice = {
         }
     },
 
-    removeElement: function(target, value) {
+    /*
+     * removes an element
+     * @param {Object} target the jquery object with the target
+     */
+    removeElement: function(target) {
         console.log("Removing Element");
         target.css('display', "none");
     },
 
-    hideElement: function(target, value) {
+    /*
+     * hides an element
+     * @param {Object} target the jquery object with the target
+     */
+    hideElement: function(target) {
         console.log("Hiding Element");
         target.css('display', "none");
     },
 
-    showElement: function(target, value) {
+    /*
+     * shows an element
+     * @param {Object} target the jquery object with the target
+     */
+    showElement: function(target) {
         if (target.css("visibility") == "hidden") {
             console.log("Showing Element");
             target.css('visibility', "visible");
@@ -543,18 +643,13 @@ Spice = {
         }
     },
 
+    /*
+     * restores an element
+     * @param {Object} target the jquery object with the target
+     */
     restoreElement: function(target, value) {
         console.log("Restoring Element");
         target.css('display', "block");
-    },
-
-    //Function to convert rgb format to a hex color
-    rgb2hex: function(rgb) {
-        rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-        return (rgb && rgb.length === 4) ? "#" +
-            ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
     }
 
 };
