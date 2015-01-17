@@ -1,0 +1,13 @@
+body {
+    margin: 0px auto;
+    width: 800px;
+    font-family: Arial, sans-serif;
+    color: #666;
+    padding: 20px;
+}
+h1 {
+    color: #999;
+}
+.paragraph {
+    padding: 5px;
+}
