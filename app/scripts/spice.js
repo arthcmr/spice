@@ -474,7 +474,7 @@ Spice = {
         console.log("Trying to change the background");
         this.p_value = target.css("backgroundColor");
 
-        target.css('-webkit-transition', 'background-color 1s ease-out');
+        target.css('-webkit-transition', 'background-color 0.2s ease-out');
 
         if (value === "lighter" || value === "darker" || value === "brighter") {
             var currentRgb = target.css("backgroundColor");
@@ -522,7 +522,7 @@ Spice = {
         console.log("Trying to change the font color");
         this.p_value = target.css("color");
 
-        target.css('-webkit-transition', 'color 1s ease-out');
+        target.css('-webkit-transition', 'color 0.2s ease-out');
 
         if (value === "lighter" || value === "darker" || value === "brighter") {
             var currentRgb = target.css("color");
@@ -564,7 +564,7 @@ Spice = {
             target.css('font-size', value);
         }
 
-        target.css('-webkit-transition', 'font-size 1s ease-out');
+        target.css('-webkit-transition', 'font-size 0.2s ease-out');
     },
 
     /*

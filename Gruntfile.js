@@ -208,7 +208,8 @@ module.exports = function (grunt) {
                     cwd: '<%= config.app %>/bower_components',
                     dest: '<%= config.dist %>/vendor',
                     src: [
-                        'jquery/*/*'
+                        'jquery/dist/jquery.min.js',
+                        'pleasejs/dist/Please.js'
                     ]
                 }]
             }
