@@ -19,7 +19,7 @@ Spice = {
 
         //in case theres no webkitSpeech
         if (!('webkitSpeechRecognition' in window)) {
-            $('#spice_display').html("This browser is not supported. Use a newer version of Google Chrome.");
+            $('#spice-display').html("This browser is not supported. Use a newer version of Google Chrome.");
         }
         //we can use speech recognition
         else {
@@ -60,15 +60,15 @@ Spice = {
                 this.sentence = sentence;
 
                 if (this.sentence !== "") {
-                    $('#spice_sentence').html(this.sentence);
+                    $('#spice-sentence').html(this.sentence);
                 }
 
                 if (final_sentence) {
-                    $('#spice_history').html(this.sentence);
+                    $('#spice-history').html(this.sentence);
                     this.processSentence(this.sentence);
                     //then we send to wit
                     this.sentence = "";
-                    $('#spice_sentence').html("");
+                    $('#spice-sentence').html("");
                 }
 
             }.bind(this);
@@ -128,8 +128,8 @@ Spice = {
 
             _this.executeCommand(_this.interpretWit(response));
 
-            $('#spice_done').html($('#spice_history').html());
-            $('#spice_history').html("");
+            $('#spice-done').html($('#spice-history').html());
+            $('#spice-history').html("");
         });
     },
 
@@ -392,20 +392,20 @@ Spice = {
 
         start_player.play();
 
-        $('#spice_display').removeClass('error');
-        $('#spice_display').addClass('success');
+        $('#spice-display').removeClass('spice-error');
+        $('#spice-display').addClass('spice-success');
 
         this[command.action](command.target, command.value);
     },
 
     shakeAnimation: function() {
 
-        element = $("#spice_display");
-        element.addClass('error');
-        element.removeClass('success');
-        element.removeClass("shakeIt");
+        element = $("#spice-display");
+        element.addClass('spice-error');
+        element.removeClass('spice-success');
+        element.removeClass("spice-shakeIt");
         setTimeout(function(){
-            element.addClass("shakeIt");
+            element.addClass("spice-shakeIt");
         },1);
     },
 

@@ -1,4 +1,4 @@
-#spice_display {
+#spice-display {
     font-family: Helvetica, Arial, sans-serif;
     display: block;
     text-align: center;
@@ -20,7 +20,14 @@
     z-index: 2147483647;
 }
 
-#spice_intro {
+#spice-display.spice-success {
+    border-color: rgb(108, 180, 108);
+}
+#spice-display.spice-error{
+    border-color: rgb(222, 89, 89);
+}
+
+#spice-intro {
     font-family: Helvetica, Arial, sans-serif;
     display: block;
     text-align: center;
@@ -42,23 +49,22 @@
     z-index: 2147483647;
 }
 
-#spice_display.success {
-    border-color: rgb(108, 180, 108);
-}
-#spice_display.error{
-    border-color: rgb(222, 89, 89);
-}
-
-#spice_info {
+#spice-info {
+    cursor: pointer;
     margin: -5px 5px;
     width: 20px;
     height: 20px;    
     background: url(../images/info.png); 
     background-repeat: no-repeat;
     background-size: 15px 15px;
+    opacity: 0.5;
 }
 
-#spice_quote {
+#spice-info:hover {
+    opacity: 0.8;
+}
+
+#spice-quote {
     margin: 5px -5px;
     display: inline;
     width: 20px;
@@ -68,7 +74,7 @@
     background-size: 15px 15px;
 }
 
-#spice_logo {
+#spice-logo {
     margin: 5px auto;
     width: 30px;
     height: 30px;  
@@ -78,34 +84,41 @@
     background-size: 30px 30px;
 }
 
-.right {
+
+.spice-right {
     position: absolute;
     right: 0px;
     width: 300px;    
 }
 
-#spice_microphone {
+.spice-hovered {
+    -webkit-box-shadow: 0px 0px 3px 0px rgba(216,48,56, 0.5);
+    -moz-box-shadow: 0px 0px 3px 0px rgba(216,48,56, 0.5);
+    box-shadow: 0px 0px 3px 0px rgba(216,48,56, 0.5);
+}
+
+#spice-microphone {
     margin: 5px auto;
     width: 30px;
     height: 30px;
     background: url(../images/microphone.png);
     background-position: center center;
     background-repeat: no-repeat;
-    -webkit-animation: pulsing 1s infinite;
-    animation: pulsing 1s infinite;
+    -webkit-animation: spice-pulsing 1s infinite;
+    animation: spice-pulsing 1s infinite;
 }
-#spice_display #spice_sentence {
+#spice-display #spice-sentence {
     color: #CB844B;
     margin-bottom: 5px;
 }
-#spice_display #spice_history {
+#spice-display #spice-history {
     color: #5F97C5;
     margin-bottom: 5px;
 }
-#spice_display #spice_done {
+#spice-display #spice-done {
     color: #CCCCCC;
 }
-@-webkit-keyframes pulsing {
+@-webkit-keyframes spice-pulsing {
   0% {
         opacity: 0.5;
     }
@@ -116,7 +129,7 @@
         opacity: 0.5;
     }
 }
-@keyframes pulsing {
+@keyframes spice-pulsing {
     0% {
         opacity: 0.5;
     }
@@ -128,7 +141,7 @@
     }
 }
 
-@-webkit-keyframes shake {
+@-webkit-keyframes spice-shake {
     0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
     10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
     20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
@@ -142,8 +155,8 @@
     100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
 }
 
-.shakeIt {
-    -webkit-animation-name: shake;
+.spice-shakeIt {
+    -webkit-animation-name: spice-shake;
     -webkit-animation-duration: 0.8s;
     -webkit-transform-origin:50% 50%;
     -webkit-animation-iteration-count: 1;
