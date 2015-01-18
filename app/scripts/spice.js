@@ -185,7 +185,6 @@ Spice = {
            
             var intent = response.intent,
                 target = this.findTarget(response, wit_response._text);
-             console.log("intent=", intent);
             /*
             * Figure out intent in case of "it"
             */
@@ -272,7 +271,6 @@ Spice = {
              */
             else if (intent === "undo" || intent === "go_back") {
 
-                console.log("p_intent=",this.p_intent,"p_action=",this.p_action,"p_target=",this.p_target,"p_value=",this.p_value);
                 console.log("Trying to undo");
                 if (this.p_action == "hideElement") {
                     //console.log("prev hide now show");
@@ -349,7 +347,6 @@ Spice = {
         } else if (intent === "background") {
             target = $("body");
         } else if (intent === "text") {
-            console.log("i am here");
             //this.p_ordinal = null;
             target = $("body");
         }
@@ -449,7 +446,6 @@ Spice = {
      */
     executeCommand: function(command) {
         console.log("Trying to execute command", command);
-       // console.log("order=", this.p_ordinal);
         if (!command.action) {
             console.log("We could not understand you");
 
