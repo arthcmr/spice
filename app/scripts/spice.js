@@ -15,8 +15,8 @@ Spice = {
     p_target: "",
     p_value: "",
     p_intent: "",
-    p_ordinal: null,
-    it_flag: 0,
+    //p_order: null,
+    //it_flag: 0,
     hover_element: null,
 
     /*
@@ -179,28 +179,34 @@ Spice = {
         };
 
         var response = wit_response.outcomes[0];
-        it_flag = 0;
+        //it_flag = 0;
         //check confidence
         if (response.confidence > 0.7) {
-            if (response.intent === "it") {
-                response.intent = this.p_intent;
-                it_flag = 1;
-            }
+           
             var intent = response.intent,
                 target = this.findTarget(response, wit_response._text);
+             console.log("intent=", intent);
+            /*
+            * Figure out intent in case of "it"
+            */
+            if (intent === "it") {
+                intent = this.p_intent;
+                //it_flag = 1;
+            }
 
             /*
-             * Figure out intent in case of this
-             */
+             * Figure out intent in case of "this"             */
             if (intent === "this") {
                 var target_tag = target.prop("tagName");
                 if (target_tag === "BODY" || target_tag === "HTML") {
                     intent = "background";
+                    this.p_intent = "background";
 
                 } else {
                     intent = "text";
+                    this.p_intent = "paragraph";
                 }
-                this.p_intent = "paragraph";
+                
             }
 
             /*
@@ -222,7 +228,7 @@ Spice = {
                     command.action = actionValue.action;
                     command.value = actionValue.value;
                     this.p_action = command.action;
-                    this.p_target = target;
+                    this.p_target = command.target;
                 }
             }
 
@@ -240,7 +246,7 @@ Spice = {
                     command.action = actionValue.action;
                     command.value = actionValue.value;
                     this.p_action = command.action;
-                    this.p_target = target;
+                    this.p_target = command.target;
                 }
 
             }
@@ -257,30 +263,31 @@ Spice = {
                     command.action = actionValue.action;
                     command.value = actionValue.value;
                     this.p_action = command.action;
-                    this.p_target = target;
+                    this.p_target = command.target;
                 }
             }
 
             /*
              * Undo
              */
-            else if (intent === "undo" || intent === "go back") {
+            else if (intent === "undo" || intent === "go_back") {
 
+                console.log("p_intent=",this.p_intent,"p_action=",this.p_action,"p_target=",this.p_target,"p_value=",this.p_value);
                 console.log("Trying to undo");
                 if (this.p_action == "hideElement") {
-                    console.log("prev hide now show");
+                    //console.log("prev hide now show");
                     command.action = "showElement";
                     this.p_action = "showElement"
                 } else if (this.p_action == "showElement") {
-                    console.log("prev show now hide");
+                    //console.log("prev show now hide");
                     command.action = "hideElement";
                     this.p_action = "hideElement"
                 } else if (this.p_action == "removeElement") {
-                    console.log("prev remove now restore");
+                    //console.log("prev remove now restore");
                     command.action = "restoreElement";
                     this.p_action = "restoreElement"
                 } else if (this.p_action == "restoreElement") {
-                    console.log("prev restore now remove");
+                    //console.log("prev restore now remove");
                     command.action = "removeElement";
                     this.p_action = "removeElement"
                 } else {
@@ -293,7 +300,6 @@ Spice = {
             }
 
         }
-
         return command;
     },
 
@@ -309,6 +315,9 @@ Spice = {
             order;
         if (intent === "this") {
             target = this.hover_element;
+        }
+        else if (intent==="it"){
+            target= this.p_target;
         }
         // EVERYTHING THAT NEEDS ORDINAL COMES HERE !!!
         else if (intent === "paragraph" || intent === "title" || intent === "picture") {
@@ -326,23 +335,30 @@ Spice = {
             //get the target based on order
             if (response.entities.ordinal && response.entities.ordinal.length) {
                 order = response.entities.ordinal[0].value - 1;
-                this.p_ordinal = order;
+                //this.p_ordinal = order;
                 target = $(target_tag + ":eq(" + order + ")");
-            } else if (it_flag == 0) {
+            } else {
                 target = $(target_tag)
-
-            } else if (it_flag == 1 && this.p_ordinal != null) {
-                target = $(target_tag + ":eq(" + this.p_ordinal + ")");
             }
+           
+
+           /*  else if (it_flag == 1 && this.p_ordinal != null) {
+            *    target = $(target_tag + ":eq(" + this.p_ordinal + ")");
+            *}
+            */
         } else if (intent === "background") {
             target = $("body");
         } else if (intent === "text") {
             console.log("i am here");
-            this.p_ordinal = null;
+            //this.p_ordinal = null;
             target = $("body");
         }
-
+        else if (intent=== "go_back" || intent==="undo"){
+            target= this.p_target;
+        }
+        this.p_target=target;
         return target;
+        
 
     },
 
@@ -433,7 +449,7 @@ Spice = {
      */
     executeCommand: function(command) {
         console.log("Trying to execute command", command);
-        console.log("order=", this.p_ordinal);
+       // console.log("order=", this.p_ordinal);
         if (!command.action) {
             console.log("We could not understand you");
 
