@@ -15,8 +15,6 @@ Spice = {
     p_target: "",
     p_value: "",
     p_intent: "",
-    //p_order: null,
-    //it_flag: 0,
     hover_element: null,
 
     /*
@@ -272,32 +270,38 @@ Spice = {
             else if (intent === "undo" || intent === "go_back") {
 
                 console.log("Trying to undo");
-                if (this.p_action == "hideElement") {
+                if (this.p_action === "hideElement") {
                     //console.log("prev hide now show");
                     command.action = "showElement";
                     this.p_action = "showElement"
-                } else if (this.p_action == "showElement") {
+                } else if (this.p_action === "showElement") {
                     //console.log("prev show now hide");
                     command.action = "hideElement";
                     this.p_action = "hideElement"
-                } else if (this.p_action == "removeElement") {
+                } else if (this.p_action === "removeElement") {
                     //console.log("prev remove now restore");
                     command.action = "restoreElement";
                     this.p_action = "restoreElement"
-                } else if (this.p_action == "restoreElement") {
+                } else if (this.p_action === "restoreElement") {
                     //console.log("prev restore now remove");
                     command.action = "removeElement";
                     this.p_action = "removeElement"
-                } else {
+                } else if (this.p_action === "changePicture"){
                     command.action = this.p_action;
+                    if (this.p_value === "bigger" || this.p_value === "larger" || this.p_value === "increase") 
+                        this.p_value = "smaller";
+                    else if (this.p_value === "smaller" || this.p_value === "decrease" || this.p_value === "small")
+                        this.p_value = "bigger";
 
+                }else {
+                    command.action = this.p_action;
                 }
                 command.target = this.p_target;
                 command.value = this.p_value;
 
             }
 
-        }
+        }   
         return command;
     },
 
@@ -489,7 +493,6 @@ Spice = {
         target.each(function() {
             var t = $(this);
             t.css('-webkit-transition', 'background-color 0.2s ease-out');
-
             if (value === "lighter" || value === "darker" || value === "brighter") {
                 var currentRgb = t.css("backgroundColor");
                 var currentHex = SpiceUtils.rgb2hex(currentRgb);
@@ -507,9 +510,9 @@ Spice = {
      */
     changePicture: function(target, value) {
         console.log("Trying to change the picture");
-        this.p_value = target.width();
         var multiplier = 1;
-
+        this.p_value = value;
+        
         if (SpiceUtils.isSize(value)) {
             if (value === "bigger" || value === "larger" || value === "increase") {
                 multiplier = 1.25;
